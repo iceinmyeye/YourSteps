@@ -1,5 +1,6 @@
 package com.mindray.yoursteps.view;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,24 +30,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        /* switch (item.getItemId()) {
-            case R.id.action_sign_in:
-                Intent accountIntent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(accountIntent);
-                break;
-            case R.id.action_update:
-                new UpdateTask(MainActivity.this).update();
-                break;
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
-            case R.id.action_wave:
-                startActivity(new Intent(MainActivity.this, WaveActivity.class));
+            case R.id.action_reset:
+                break;
+            case R.id.action_quit:
+                break;
         }
-
-        return super.onOptionsItemSelected(item); */
-        return true;
+        return super.onOptionsItemSelected(item);
     }
     // End of Menu
 }
