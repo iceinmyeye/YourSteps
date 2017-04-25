@@ -19,34 +19,35 @@ import android.util.Log;
  */
 
 public class StepService extends Service implements SensorEventListener {
-    private final static String TAG="SetupService";
+    private final static String TAG = "SetupService";
 
     private SensorManager sensorManager;
     private StepCount stepCount;
     private BroadcastReceiver mBroadcastReceiver;
-    private final static int MSG=0;
-    private final static int MSG_SERVER=1;
+    private final static int MSG = 0;
+    private final static int MSG_SERVER = 1;
 
     //计步器传感器类型 0-counter 1-detector
     private static int stepSensor = -1;
 
-    private Messenger messenger = new Messenger(new MessenerHandler());
-    private static class MessenerHandler extends Handler {
+    private Messenger messenger = new Messenger(new MessengerHandler());
+
+    private static class MessengerHandler extends Handler {
 
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-            switch(msg.what){
+            switch (msg.what) {
                 case MSG:
-                    try{
+                    try {
                         Messenger messenger = msg.replyTo;
                         Message replyMsg = Message.obtain(null, MSG_SERVER);
                         Bundle bundle = new Bundle();
                         bundle.putInt("step", StepCount.CURRENT_SETP);
                         replyMsg.setData(bundle);
-                        Log.d(TAG, replyMsg+"");
+                        Log.d(TAG, replyMsg + "");
                         messenger.send(replyMsg);
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
@@ -77,21 +78,21 @@ public class StepService extends Service implements SensorEventListener {
         return START_STICKY;
     }
 
-    private void startStepDetector(){
-        if(sensorManager != null && stepCount !=null){
+    private void startStepCount() {
+        if (sensorManager != null && stepCount != null) {
             sensorManager.unregisterListener(stepCount);
             sensorManager = null;
             stepCount = null;
         }
         //getLock(this);
         //获取传感器管理器的实例
-        sensorManager = (SensorManager)this.getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         //android 4.4以后可以使用计步传感器  在根据API不同版本分别执行addCountStepListener和addBasePedoListener两个方法
         int VERSION_CODES = android.os.Build.VERSION.SDK_INT;
-        Log.d(TAG, VERSION_CODES+"");
-        if(VERSION_CODES>19){//sdk版本
+        Log.d(TAG, VERSION_CODES + "");
+        if (VERSION_CODES > 19) {//sdk版本
             addCountStepListener();
-        }else{
+        } else {
             addBasePedoListener();
         }
     }
@@ -137,9 +138,9 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         // TODO Auto-generated method stub
-        if(stepSensor ==0){
-            StepCount.CURRENT_SETP = (int)event.values[0];
-        }else if(stepSensor ==1){
+        if (stepSensor == 0) {
+            StepCount.CURRENT_SETP = (int) event.values[0];
+        } else if (stepSensor == 1) {
             StepCount.CURRENT_SETP++;
         }
         //updateNotification("今日步数：" + StepDcretor.CURRENT_SETP + " 步");
@@ -156,16 +157,17 @@ public class StepService extends Service implements SensorEventListener {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                startStepDetector();
+                startStepCount();
             }
         }).start();
 
     }
+
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
         unregisterReceiver(mBroadcastReceiver);//注销广播
-        Intent intent = new Intent(this,StepService.class);
+        Intent intent = new Intent(this, StepService.class);
         startService(intent);//重新启动StepService 服务
         super.onDestroy();
     }
