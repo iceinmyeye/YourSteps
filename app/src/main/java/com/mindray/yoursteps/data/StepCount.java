@@ -48,7 +48,7 @@ public class StepCount implements SensorEventListener {
     //初始阈值
     float ThreadValue = (float) 2.0;
 
-    private final String TAG = "StepDcretor";
+    private final String TAG = "StepDetector";
     // alpha 由 t / (t + dT)计算得来，其中 t 是低通滤波器的时间常数，dT 是事件报送频率
 //    private final float alpha = 0.8f;
 //    private long perCalTime = 0;
@@ -67,7 +67,7 @@ public class StepCount implements SensorEventListener {
      * 0-准备计时   1-计时中  2-准备为正常计步计时  3-正常计步中
      */
     private int CountTimeState = 0;
-    public static int CURRENT_SETP = 0;
+    public static int CURRENT_STEP = 0;
     public static int TEMP_STEP = 0;
     private int lastStep = -1;
     // 加速计的三个维度数值
@@ -165,7 +165,7 @@ public class StepCount implements SensorEventListener {
             TEMP_STEP++;
             Log.v(TAG, "计步中 TEMP_STEP:" + TEMP_STEP);
         } else if (CountTimeState == 3) {
-            CURRENT_SETP++;
+            CURRENT_STEP++;
             if (onSensorChangeListener != null) {
                 onSensorChangeListener.onChange();
             }
@@ -263,7 +263,7 @@ public class StepCount implements SensorEventListener {
         public void onFinish() {
             // 如果计时器正常结束，则开始计步
             time.cancel();
-            CURRENT_SETP += TEMP_STEP;
+            CURRENT_STEP += TEMP_STEP;
             lastStep = -1;
 //            CountTimeState = 2;
             Log.v(TAG, "计时正常结束");
@@ -271,14 +271,14 @@ public class StepCount implements SensorEventListener {
             timer = new Timer(true);
             TimerTask task = new TimerTask() {
                 public void run() {
-                    if (lastStep == CURRENT_SETP) {
+                    if (lastStep == CURRENT_STEP) {
                         timer.cancel();
                         CountTimeState = 0;
                         lastStep = -1;
                         TEMP_STEP = 0;
-                        Log.v(TAG, "停止计步：" + CURRENT_SETP);
+                        Log.v(TAG, "停止计步：" + CURRENT_STEP);
                     } else {
-                        lastStep = CURRENT_SETP;
+                        lastStep = CURRENT_STEP;
                     }
                 }
             };
