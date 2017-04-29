@@ -6,4 +6,22 @@
     <string name="menu_reset">重置</string>
     <string name="menu_quit">退出</string>
 
+    <!-- 计步 -->
+    <string name="current_step">当前步数</string>
+    <string name="unit_step">步</string>
+
+    <!-- 各项内容 -->
+    <string name="step_name">名称</string>
+    <string name="step_content">内容</string>
+
+    <string name="step_status">运动状态：</string>
+    <string name="step_distance">当前距离：</string>
+    <string name="step_consumption">卡路里消耗：</string>
+    
+    <!-- 运动等级 -->
+    <string name="step_status_still">静止</string>
+    <string name="step_status_mild">轻微</string>
+    <string name="step_status_medium">中等</string>
+    <string name="step_status_severe">剧烈</string>
+
 </resources>

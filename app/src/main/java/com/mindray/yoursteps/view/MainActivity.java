@@ -17,10 +17,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
-import com.mindray.yoursteps.data.StepCount;
 import com.mindray.yoursteps.data.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
@@ -34,6 +35,17 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private Handler delayHandler;
     private Messenger messenger;
     private Messenger mGetReplyMessenger = new Messenger(new Handler(this));
+
+    private int stepNum; //显示在主界面的步数
+    private String status;
+    private String distance;
+    private String consumption;
+
+    private TextView textViewStatus;
+    private TextView textViewDistance;
+    private TextView textViewConsumption;
+
+    DecimalFormat df = new DecimalFormat("#.0"); // 数据显示格式
 
     // 定义ServiceConnection对象
     ServiceConnection conn = new ServiceConnection() {
@@ -74,9 +86,16 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     // 启动UI
     private void initUI() {
-        // TODO Auto-generated method stub
         textStep = (TextView) findViewById(R.id.textView_step);
+        textViewStatus = (TextView) findViewById(R.id.item_status);
+        textViewDistance = (TextView) findViewById(R.id.item_distance);
+        textViewConsumption = (TextView) findViewById(R.id.item_consumption);
         delayHandler = new Handler(this);
+    }
+
+    // 初始化下方内容界面
+    private void initItem() {
+
     }
 
     // 启动服务
@@ -95,7 +114,15 @@ public class MainActivity extends AppCompatActivity implements Callback {
         switch (msg.what) {
             case MSG_FROM_SERVER:
                 Log.d(TAG, "text=" + msg.getData().getInt("step"));
-                textStep.setText(msg.getData().getInt("step") + "");//显示记步数
+                stepNum = msg.getData().getInt("step");
+                distance = df.format(stepNum * 0.3) + " m";
+                consumption = df.format(stepNum * 2.2) + " C";
+
+                textStep.setText(stepNum + "");//显示记步数
+                textViewStatus.setText("静止");
+                textViewDistance.setText(distance);
+                textViewConsumption.setText(consumption);
+
                 //延时500ms发送值为REQUEST_SERVER 消息
                 delayHandler.sendEmptyMessageDelayed(REQUEST_SERVER, TIME_INTERVAL);
                 break;
