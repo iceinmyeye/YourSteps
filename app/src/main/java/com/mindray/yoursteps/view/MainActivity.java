@@ -17,7 +17,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.data.StepCount;
 import com.mindray.yoursteps.data.StepService;
+import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements Callback {
@@ -35,15 +37,15 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     // 定义ServiceConnection对象
     ServiceConnection conn = new ServiceConnection() {
+
+        // 活动与服务接触绑定的时候调用
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            // TODO Auto-generated method stub
-
         }
 
+        // 活动与服务成功绑定的时候调用
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            // TODO Auto-generated method stub
             try {
                 messenger = new Messenger(service);
                 Message msg = Message.obtain(null, MSG_FROM_CLIENT);
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActivityCollector.addActivity(this);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        // TODO Auto-generated method stub
         switch (msg.what) {
             case MSG_FROM_SERVER:
                 Log.d(TAG, "text=" + msg.getData().getInt("step"));
@@ -112,9 +115,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         super.onDestroy();
-        unbindService(conn);//解除服务的绑定
+        unbindService(conn); //解除服务的绑定
+
+        ActivityCollector.removeActivity(this);
     }
 
     // Start of Menu
@@ -132,8 +136,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 startActivity(settingsIntent);
                 break;
             case R.id.action_reset:
+                // TODO: 重置按钮功能
+                StepCount.CURRENT_STEP = 0;
                 break;
             case R.id.action_quit:
+                ActivityCollector.finishAll();
+                Intent intentQuit = new Intent(this, StepService.class);
+                stopService(intentQuit);
                 break;
         }
         return super.onOptionsItemSelected(item);
