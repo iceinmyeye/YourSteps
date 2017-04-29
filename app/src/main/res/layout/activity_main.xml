@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.mindray.yoursteps.view.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -24,10 +25,31 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:text="TextView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView_step" />
+        android:layout_height="200dp">
+
+        <TextView
+            android:text="@string/current_step"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView_step"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/textView" />
+
+        <TextView
+            android:text="TextView"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_step"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
 
 </LinearLayout>
