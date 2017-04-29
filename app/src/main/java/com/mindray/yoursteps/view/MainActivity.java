@@ -136,8 +136,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 startActivity(settingsIntent);
                 break;
             case R.id.action_reset:
-                // TODO: 重置按钮功能
-                StepCount.CURRENT_STEP = 0;
+                Intent intentReset = new Intent(this, StepService.class);
+                stopService(intentReset);
+                unbindService(conn);
+                bindService(intentReset, conn, BIND_AUTO_CREATE);
+                startService(intentReset);
                 break;
             case R.id.action_quit:
                 ActivityCollector.finishAll();
