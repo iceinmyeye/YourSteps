@@ -31,12 +31,20 @@ public class MainActivity extends AppCompatActivity implements Callback {
     public static final int REQUEST_SERVER = 2;//取消服务
     private long TIME_INTERVAL = 500;
 
+    // 初始状态设置的默认值
+    public static final int beginTarget = 1000;
+    public static final float beginMagnitude = 0.3f;
+    public static final float beginCalorie = 2.2f;
+
     private TextView textStep;
     private Handler delayHandler;
     private Messenger messenger;
     private Messenger mGetReplyMessenger = new Messenger(new Handler(this));
 
     private int stepNum; //显示在主界面的步数
+    private int stepTarget = beginTarget;
+    private float stepMagnitude = beginMagnitude;
+    private float stepConsumption = beginCalorie;
     private String status;
     private String distance;
     private String consumption;
@@ -114,12 +122,35 @@ public class MainActivity extends AppCompatActivity implements Callback {
         switch (msg.what) {
             case MSG_FROM_SERVER:
                 Log.d(TAG, "text=" + msg.getData().getInt("step"));
-                stepNum = msg.getData().getInt("step");
-                distance = df.format(stepNum * 0.3) + " m";
-                consumption = df.format(stepNum * 2.2) + " C";
+                //stepNum = msg.getData().getInt("step");
+                String s =msg.getData().getString("step");
+                String [] s2 = s.split("\\s");
+                int stepNum = Integer.parseInt(s2[0]);
+                //textStep.setText(s2[0]);//显示步数
+                switch (s2[1]){
+                    case "0":
+                        textViewStatus.setText("静止");
+                        break;
+                    case "1":
+                        textViewStatus.setText("步行");
+                        break;
+                    case "2":
+                        textViewStatus.setText("慢跑");
+                        break;
+                    case "3":
+                        textViewStatus.setText("快跑");
+                        break;
+                    case "4":
+                        textViewStatus.setText("未知");
+                        break;
+                    default:
+                        textViewStatus.setText("error");
+                        break;
+                }
+                distance = df.format(stepNum * stepMagnitude) + " m";
+                consumption = df.format(stepNum * stepConsumption) + " C";
 
-                textStep.setText(stepNum + "");//显示记步数
-                textViewStatus.setText("静止");
+                textStep.setText(s2[0]);//显示记步数
                 textViewDistance.setText(distance);
                 textViewConsumption.setText(consumption);
 
@@ -160,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                startActivityForResult(settingsIntent, 11);
                 break;
             case R.id.action_reset:
                 Intent intentReset = new Intent(this, StepService.class);
@@ -178,4 +209,20 @@ public class MainActivity extends AppCompatActivity implements Callback {
         return super.onOptionsItemSelected(item);
     }
     // End of Menu
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 11:
+                if (resultCode == RESULT_OK) {
+                    stepTarget = Integer.parseInt(data.getStringExtra("target"));
+                    stepMagnitude = (float) Integer.parseInt(data.getStringExtra("magnitude"))/100;
+                    stepConsumption = (float) Integer.parseInt(data.getStringExtra("consumption"))/100;
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }

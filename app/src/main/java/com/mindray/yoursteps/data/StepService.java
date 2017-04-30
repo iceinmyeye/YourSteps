@@ -43,7 +43,8 @@ public class StepService extends Service implements SensorEventListener {
                         Messenger messenger = msg.replyTo;
                         Message replyMsg = Message.obtain(null, MSG_SERVER);
                         Bundle bundle = new Bundle();
-                        bundle.putInt("step", StepCount.CURRENT_STEP);
+                        //bundle.putInt("step", StepCount.CURRENT_STEP);
+                        bundle.putString("step", StepCount2.CURRENT_STEP + " " + StepCount2.stationvalue);
                         replyMsg.setData(bundle);
                         Log.d(TAG, replyMsg + "");
                         messenger.send(replyMsg);
@@ -77,13 +78,6 @@ public class StepService extends Service implements SensorEventListener {
             }
         }).start();
 
-    }
-
-    @Override
-    @Deprecated
-    public void onStart(Intent intent, int startId) {
-        // TODO Auto-generated method stub
-        super.onStart(intent, startId);
     }
 
     // onStartCommand()方法，在每次服务启动的时候调用。服务一旦启动，就会立刻执行其中的动作
@@ -151,9 +145,9 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (stepSensor == 0) {
-            StepCount.CURRENT_STEP = (int) event.values[0];
+            StepCount2.CURRENT_STEP = (int) event.values[0];
         } else if (stepSensor == 1) {
-            StepCount.CURRENT_STEP++;
+            StepCount2.CURRENT_STEP++;
         }
         //updateNotification("今日步数：" + StepDcretor.CURRENT_STEP + " 步");
     }
