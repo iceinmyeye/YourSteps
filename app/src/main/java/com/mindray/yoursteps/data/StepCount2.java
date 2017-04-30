@@ -166,6 +166,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
      * 计时器
      */
     private void preStep() {
+        System.out.println("this is a TEST");
         if (CountTimeState == 0) {
             // 开启计时器
             time = new TimeCount(duration, 700);
@@ -200,24 +201,27 @@ public class StepCount2 implements SensorEventListener, Serializable {
             timeOfValley = System.currentTimeMillis();
             isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
             valueOfValley = oldValue[2];
+            System.out.println("This is test_3");
         } else if (isPeakOrValley && oldValue[judgeNum - 2] > 11 && oldValue[judgeNum - 2] > 12
                 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
             timeOfPeak = System.currentTimeMillis();
             isPeakOrValley = !isPeakOrValley;  //检测波峰
             valueOfPeak = oldValue[2];  // 数组中2为峰值
+            System.out.println("This is test_4");
             //判断是否是干扰
             if (valueOfPeak - valueOfValley > 0.1 * 9.8
                     && timeOfPeak - timeOfValley > 200 && timeOfPeak - timeOfValley < 2000) {
+                System.out.println("This is test_5");
                 //确认为一个有效的步态
                 for (int i = 0; i < diffNum - 1; i++) {
-                    diffValue[2][i] = diffValue[2][i + 1];
                     diffValue[1][i] = diffValue[1][i + 1];
+                    diffValue[0][i] = diffValue[0][i + 1];
                 }
 
-                diffValue[2][diffNum - 1] = valueOfPeak - valueOfValley;
+                diffValue[1][diffNum - 1] = valueOfPeak - valueOfValley;
 
-                diffValue[1][diffNum - 1] = timeOfPeak - timeOfValley;  //判断状态用到的5组的时间和幅度差值
+                diffValue[0][diffNum - 1] = timeOfPeak - timeOfValley;  //判断状态用到的5组的时间和幅度差值
                 //是否进行状态判断
                 isStation += 1;
                 //5次进行一次状态检测
@@ -229,6 +233,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
                 isPeakOrValley = !isPeakOrValley;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
             }
         }
+        System.out.println("This is test_2");
         return false;
     }
 
@@ -237,9 +242,9 @@ public class StepCount2 implements SensorEventListener, Serializable {
     */
     public int station(float[][] diffValue) {
 
-        frequence = (diffValue[1][diffNum - 1] - diffValue[1][0]) / 4;//两个动作的时间差  感觉可能在200-750之间
+        frequence = (diffValue[0][diffNum - 1] - diffValue[0][0]) / 4;//两个动作的时间差  感觉可能在200-750之间
         for (int i = 0; i < diffNum; i++) {
-            diff += diffValue[2][i];
+            diff += diffValue[1][i];
         }
         if (frequence < fRunFast && diff > dRunFast) {
             stationvalue = 3;
