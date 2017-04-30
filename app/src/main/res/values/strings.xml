@@ -9,6 +9,8 @@
     <!-- 计步 -->
     <string name="current_step">当前步数</string>
     <string name="unit_step">步</string>
+    <string name="unit_cm">厘米</string>
+    <string name="unit_calorie">焦耳</string>
 
     <!-- 各项内容 -->
     <string name="step_name">名称</string>
@@ -23,5 +25,13 @@
     <string name="step_status_mild">轻微</string>
     <string name="step_status_medium">中等</string>
     <string name="step_status_severe">剧烈</string>
+    
+    <!-- 设置 -->
+    <string name="settings_target">目标</string>
+    <string name="settings_magnitude">步幅</string>
+    <string name="settings_calorie">卡路里</string>
+    <string name="save">保存</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
 
 </resources>

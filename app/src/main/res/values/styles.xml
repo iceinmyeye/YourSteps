@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -32,5 +32,54 @@
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="BaseTextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="LabelTextView" parent="BaseTextView">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:color">@color/primaryText</item>
+    </style>
+
+    <style name="InfoTextView" parent="BaseTextView">
+        <item name="android:gravity">right</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:color">@color/secondaryText</item>
+    </style>
+
+    <style name="MoreTextView" parent="BaseTextView">
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:color">@color/secondaryText</item>
+    </style>
+
+    <style name="BaseMargin">
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
+    <style name="BaseButton" parent="BaseMargin">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="SmallPrompt">
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/secondaryText</item>
+    </style>
+
+    <style name="IndexTextView">
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DividerLine">
+        <item name="android:background">@color/accent</item>
+    </style>
 
 </resources>
