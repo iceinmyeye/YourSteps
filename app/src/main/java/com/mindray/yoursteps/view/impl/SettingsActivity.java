@@ -57,27 +57,14 @@ public class SettingsActivity extends AppCompatActivity {
         setListener();
     }
 
-//    private void  initStepInfo(int target, int magnitude, int calorie) {
-//        this.target = target;
-//        this.magnitude = magnitude;
-//        this.calorie = calorie;
-//
-//        txtStepTarget.setText(target);
-//        txtStepMagnitude.setText(magnitude);
-//        txtStepCalorie.setText(calorie);
-//    }
-
     private void bindView() {
         rlStepTarget = (RelativeLayout) findViewById(R.id.rl_step_target);
         rlStepMagnitude = (RelativeLayout) findViewById(R.id.rl_step_magnitude);
         rlStepCalorie = (RelativeLayout) findViewById(R.id.rl_step_calorie);
 
         txtStepTarget = (TextView) findViewById(R.id.txt_step_target);
-        //txtStepTarget.setText("1000");
         txtStepMagnitude = (TextView) findViewById(R.id.txt_step_magnitude);
-        //txtStepMagnitude.setText("30");
         txtStepCalorie = (TextView) findViewById(R.id.txt_step_calorie);
-        //txtStepCalorie.setText("2200");
 
         btnSave = (Button) findViewById(R.id.btn_save);
     }

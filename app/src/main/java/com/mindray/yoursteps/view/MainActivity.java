@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.data.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
+import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
@@ -199,6 +200,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 ActivityCollector.finishAll();
                 Intent intentQuit = new Intent(this, StepService.class);
                 stopService(intentQuit);
+                break;
+            case R.id.action_about:
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
                 break;
         }
         return super.onOptionsItemSelected(item);
