@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.data.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
+import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 //stepNum = msg.getData().getInt("step");
                 String s =msg.getData().getString("step");
                 String [] s2 = s.split("\\s");
-                int stepNum = Integer.parseInt(s2[0]);
+                stepNum = Integer.parseInt(s2[0]);
                 //textStep.setText(s2[0]);//显示步数
                 switch (s2[1]){
                     case "0":
@@ -200,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 Intent intentQuit = new Intent(this, StepService.class);
                 stopService(intentQuit);
                 break;
+            case R.id.action_about:
+                Intent intentAbout = new Intent(this, AboutActivity.class);
+                startActivity(intentAbout);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -210,14 +215,12 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 11:
-//                if (resultCode == RESULT_OK) {
-//                    int temp_stepTarget = Integer.parseInt(data.getStringExtra("target"));
-//                    float temp_stepMagnitude = (float) Integer.parseInt(data.getStringExtra("magnitude"))/100;
-//                    float temp_stepConsumption = (float) Integer.parseInt(data.getStringExtra("consumption"))/100;
-//                }
                 if (resultCode == RESULT_OK) {
-                    String test = data.getStringExtra("test");
-                    Log.v("test", test);
+                    stepTarget = Integer.parseInt(data.getStringExtra("target"));
+
+                    stepMagnitude = ((float) Integer.parseInt(data.getStringExtra("magnitude")))/100;
+
+                    stepConsumption = ((float) Integer.parseInt(data.getStringExtra("calorie")))/100;
                 }
                 break;
             default:

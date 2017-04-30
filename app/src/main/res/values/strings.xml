@@ -5,6 +5,7 @@
     <string name="menu_settings">设置</string>
     <string name="menu_reset">重置</string>
     <string name="menu_quit">退出</string>
+    <string name="menu_about">关于</string>
 
     <!-- 计步 -->
     <string name="current_step">当前步数</string>
@@ -33,5 +34,10 @@
     <string name="save">保存</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
+
+    <!-- 关于 -->
+    <string name="title_about">关于</string>
+    <string name="version">版本</string>
+    <string name="copyright_statement">本产品属于仙交大天才少年团所有，盗版必究！</string>
 
 </resources>

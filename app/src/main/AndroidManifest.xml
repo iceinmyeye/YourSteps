@@ -32,7 +32,7 @@
             android:label="@string/menu_settings"/>
         <activity
             android:name=".view.impl.AboutActivity"
-            android:label="@string/menu_reset" />
+            android:label="@string/menu_about" />
         <service android:name=".data.StepService"
             android:process="com.mindray.yoursteps.step"
             android:priority="1000">
