@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.CountDownTimer;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -46,19 +47,27 @@ public class StepCount2 implements SensorEventListener, Serializable {
     float diff = 0;
 
     //状态判断，初始为静止状态
-    public static int  stationvalue = 0;
+    public static int  stationvalue = 2;
+
+    public void setStation(int stationvalue) {
+        this.stationvalue = stationvalue;
+    }
+
+    public static int getStationvalue() {
+        return StepCount2.stationvalue;
+    }
 
     //需要设定快跑的频率和差值
-    float fRunFast = 200;//待定
-    float dRunFast = 10;//可以调整 5 或者12
+    float fRunFast = 140;//待定
+    float dRunFast = 30;//可以调整 5 或者12
 
     //慢跑的频率与差值
-    float fRun = 800;
-    float dRun = 4.5f;
+    float fRun = 400;
+    float dRun = 6f;
 
     //正常走路的频率与差值
-    float fWalk = 1800;
-    float dWalk = 2;
+    float fWalk = 600;
+    float dWalk = 3;
 
     // float fStand;
     // float dStand;
@@ -150,9 +159,11 @@ public class StepCount2 implements SensorEventListener, Serializable {
             //更新界面
             preStep();
         }
-        if (isStandTime - diffValue[1][diffNum - 1] > 2000) {
-            stationvalue = 0;        //距离上次波峰值大于了2000，设置为静止
-        }
+        System.out.println("standtime:"+" "+(isStandTime-timeOfPeak));
+      if (isStandTime - timeOfPeak > 2000) {
+           stationvalue = 0;        //距离上次波峰值大于了2000，设置为静止
+            System.out.println("test_11"+" "+isStandTime +" "+timeOfPeak);
+       }
         for (int i = 0; i < judgeNum - 1; i++) {
 
             isPeakOfWave[i] = isPeakOfWave[i + 1];
@@ -196,68 +207,93 @@ public class StepCount2 implements SensorEventListener, Serializable {
      * */
     public boolean DetectorPeak(float newValue, float[] oldValue) {
         //lastStatus = isDirectionUp;
-        if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
-                && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4]) {
+        if (isPeakOrValley  && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
+                && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4])  {
             timeOfValley = System.currentTimeMillis();
             isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
             valueOfValley = oldValue[2];
             System.out.println("This is test_3");
-        } else if (isPeakOrValley && oldValue[judgeNum - 2] > 11 && oldValue[judgeNum - 2] > 12
-                && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
+        }
+
+        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.5 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
             timeOfPeak = System.currentTimeMillis();
-            isPeakOrValley = !isPeakOrValley;  //检测波峰
+            //isPeakOrValley = !isPeakOrValley;  //检测波峰
             valueOfPeak = oldValue[2];  // 数组中2为峰值
             System.out.println("This is test_4");
             //判断是否是干扰
-            if (valueOfPeak - valueOfValley > 0.1 * 9.8
+            if (valueOfPeak - valueOfValley > (0.145 * 9.8)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
                     && timeOfPeak - timeOfValley > 200 && timeOfPeak - timeOfValley < 2000) {
                 System.out.println("This is test_5");
+                isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态
                 for (int i = 0; i < diffNum - 1; i++) {
                     diffValue[1][i] = diffValue[1][i + 1];
                     diffValue[0][i] = diffValue[0][i + 1];
+                    //System.out.println("test_11"+" "+ diffValue[0][i]);
                 }
-
+                System.out.println("This is test_9");
                 diffValue[1][diffNum - 1] = valueOfPeak - valueOfValley;
 
                 diffValue[0][diffNum - 1] = timeOfPeak - timeOfValley;  //判断状态用到的5组的时间和幅度差值
                 //是否进行状态判断
                 isStation += 1;
                 //5次进行一次状态检测
+                System.out.println("This is test_8");
                 if (isStation % 5 == 0 && CURRENT_STEP >= 5) {
                     station(diffValue);
+
+                    System.out.println("This is test_10");
                 }
+
+//                if (isStation % 5 == 0 && CURRENT_STEP >= 5) {
+//                    station(diffValue);
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Message messageStation = new Message();
+//                            messageStation.what = stationvalue;
+//                            handler.sendMessage(messageStation);
+//                        }
+//                    }).start();
+//                }
+                System.out.print("This is test_7");
+                timeOfPeak = System.currentTimeMillis();
                 return true;  //返回新的一步
+
             } else {
                 isPeakOrValley = !isPeakOrValley;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
+                System.out.println("This is test_5");
             }
         }
-        System.out.println("This is test_2");
+
+        System.out.println("This is test_2" + " "+(oldValue[0]-oldValue[1]) + isPeakOrValley);
+
         return false;
     }
 
     /* 状态的判断{难点}
     *
     */
-    public int station(float[][] diffValue) {
+    public void station(float[][] diffValue) {
 
         frequence = (diffValue[0][diffNum - 1] - diffValue[0][0]) / 4;//两个动作的时间差  感觉可能在200-750之间
+        int tempStation = 0;
         for (int i = 0; i < diffNum; i++) {
             diff += diffValue[1][i];
         }
         if (frequence < fRunFast && diff > dRunFast) {
-            stationvalue = 3;
-        }
-        else if ( frequence < fRun && diff > dRun) {
-            stationvalue = 2;
-        }
-        else if (frequence < fWalk && diff > dWalk) {
-            stationvalue = 1;
+            tempStation = 3;
+        } else if (frequence < fRun && diff > dRun) {
+            tempStation = 2;
+        } else if (frequence < fWalk && diff > dWalk) {
+            tempStation = 1;
         } else {
-            stationvalue = 4; //状态无法判断
+            tempStation = 4; //状态无法判断
         }
-        return stationvalue;
+        stationvalue = tempStation;
+        System.out.print("test_11"+" "+stationvalue);
+
     }
 
 
@@ -270,7 +306,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         public void onFinish() {
             // 如果计时器正常结束，则开始计步
             time.cancel();
-            CURRENT_STEP += TEMP_STEP;
+            CURRENT_STEP += TEMP_STEP;  //存的步数加入
             lastStep = -1;
 //            CountTimeState = 2;
             Log.v(TAG, "计时正常结束");
