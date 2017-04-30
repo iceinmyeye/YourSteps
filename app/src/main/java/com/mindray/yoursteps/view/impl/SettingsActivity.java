@@ -180,10 +180,16 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-//                intent.putExtra("target", txtStepTarget.getText().toString());
-//                intent.putExtra("magnitude", txtStepMagnitude.getText().toString());
-//                intent.putExtra("calorie", txtStepCalorie.getText().toString());
-                intent.putExtra("test", "I'm a test");
+
+                String strTarget = txtStepTarget.getText().toString();
+                intent.putExtra("target", strTarget);
+
+                String strMagnitude = txtStepMagnitude.getText().toString();
+                intent.putExtra("magnitude", strMagnitude);
+
+                String strCalorie = txtStepCalorie.getText().toString();
+                intent.putExtra("calorie", strCalorie);
+
                 setResult(RESULT_OK, intent);
                 SettingsActivity.this.finish();
             }
