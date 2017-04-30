@@ -101,11 +101,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
         delayHandler = new Handler(this);
     }
 
-    // 初始化下方内容界面
-    private void initItem() {
-
-    }
-
     // 启动服务
     private void setupService() {
         Intent intent = new Intent(this, StepService.class);
@@ -215,10 +210,14 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 11:
+//                if (resultCode == RESULT_OK) {
+//                    int temp_stepTarget = Integer.parseInt(data.getStringExtra("target"));
+//                    float temp_stepMagnitude = (float) Integer.parseInt(data.getStringExtra("magnitude"))/100;
+//                    float temp_stepConsumption = (float) Integer.parseInt(data.getStringExtra("consumption"))/100;
+//                }
                 if (resultCode == RESULT_OK) {
-                    stepTarget = Integer.parseInt(data.getStringExtra("target"));
-                    stepMagnitude = (float) Integer.parseInt(data.getStringExtra("magnitude"))/100;
-                    stepConsumption = (float) Integer.parseInt(data.getStringExtra("consumption"))/100;
+                    String test = data.getStringExtra("test");
+                    Log.v("test", test);
                 }
                 break;
             default:

@@ -22,7 +22,7 @@ public class StepService extends Service implements SensorEventListener {
     private final static String TAG = "SetupService";
 
     private SensorManager sensorManager;
-    private StepCount stepCount;
+    private StepCount2 stepCount2;
     private BroadcastReceiver mBroadcastReceiver;
     private final static int MSG = 0;
     private final static int MSG_SERVER = 1;
@@ -45,6 +45,9 @@ public class StepService extends Service implements SensorEventListener {
                         Bundle bundle = new Bundle();
                         //bundle.putInt("step", StepCount.CURRENT_STEP);
                         bundle.putString("step", StepCount2.CURRENT_STEP + " " + StepCount2.stationvalue);
+                        Log.v("step", String.valueOf(StepCount2.CURRENT_STEP));
+                        System.out.println("xxxx");
+                        System.out.println(String.valueOf(StepCount2.CURRENT_STEP));
                         replyMsg.setData(bundle);
                         Log.d(TAG, replyMsg + "");
                         messenger.send(replyMsg);
@@ -87,10 +90,10 @@ public class StepService extends Service implements SensorEventListener {
     }
 
     private void startStepCount() {
-        if (sensorManager != null && stepCount != null) {
-            sensorManager.unregisterListener(stepCount);
+        if (sensorManager != null && stepCount2 != null) {
+            sensorManager.unregisterListener(stepCount2);
             sensorManager = null;
-            stepCount = null;
+            stepCount2 = null;
         }
 
         //获取传感器管理器的实例
@@ -108,13 +111,13 @@ public class StepService extends Service implements SensorEventListener {
 
 
     private void addBasePedoListener() {
-        stepCount = new StepCount(this);
+        stepCount2 = new StepCount2(this);
         // 获得传感器的类型，这里获得的类型是加速度传感器
         // 此方法用来注册，只有注册过才会生效，参数：SensorEventListener的实例，Sensor的实例，更新速率
         Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         // sensorManager.unregisterListener(stepDetector);
-        sensorManager.registerListener(stepCount, sensor, SensorManager.SENSOR_DELAY_GAME);
-        stepCount.setOnSensorChangeListener(new StepCount.OnSensorChangeListener() {
+        sensorManager.registerListener(stepCount2, sensor, SensorManager.SENSOR_DELAY_GAME);
+        stepCount2.setOnSensorChangeListener(new StepCount2.OnSensorChangeListener() {
 
             @Override
             public void onChange() {

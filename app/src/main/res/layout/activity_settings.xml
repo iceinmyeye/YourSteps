@@ -50,6 +50,12 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            style="@style/UnitTextView"
+            android:text = "@string/unit_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
             style="@style/MoreTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,6 +76,12 @@
         <TextView
             android:id="@+id/txt_step_magnitude"
             style="@style/InfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/UnitTextView"
+            android:text = "@string/unit_cm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -109,6 +121,12 @@
         <TextView
             android:id="@+id/txt_step_calorie"
             style="@style/InfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/UnitTextView"
+            android:text = "@string/unit_calorie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

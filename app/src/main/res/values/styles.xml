@@ -43,10 +43,16 @@
     </style>
 
     <style name="InfoTextView" parent="BaseTextView">
-        <item name="android:gravity">right</item>
+        <item name="android:gravity">left</item>
         <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginRight">115dp</item>
         <item name="android:color">@color/secondaryText</item>
+    </style>
+
+    <style name="UnitTextView" parent="BaseTextView">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginLeft">270dp</item>
+        <item name="android:color">@color/black</item>
     </style>
 
     <style name="MoreTextView" parent="BaseTextView">
