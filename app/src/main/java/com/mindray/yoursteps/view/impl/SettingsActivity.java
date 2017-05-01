@@ -4,13 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,9 +34,9 @@ public class SettingsActivity extends AppCompatActivity {
     private Dialog dlStepMagnitude;
     private Dialog dlStepCalorie;
 
-    private int target = 1000;
-    private int magnitude = 30;
-    private int calorie = 220;
+    private int target;
+    private int magnitude;
+    private int calorie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         bindView();
+        onFillSettings(target, magnitude, calorie);
         setListener();
     }
 
@@ -76,13 +76,13 @@ public class SettingsActivity extends AppCompatActivity {
         final NumberPicker npStepTarget = new NumberPicker(this);
         npStepTarget.setMaxValue(10000);
         npStepTarget.setMinValue(100);
+        target = Integer.parseInt(txtStepTarget.getText().toString());
         npStepTarget.setValue(target);
-        txtStepTarget.setText(target + "");
         npStepTarget.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 target = newVal;
-                txtStepTarget.setText(target + "");
+                txtStepTarget.setText(String.valueOf(target));
             }
         });
         dlStepTarget = new AlertDialog.Builder(SettingsActivity.this)
@@ -106,13 +106,13 @@ public class SettingsActivity extends AppCompatActivity {
         final NumberPicker npStepMagnitude = new NumberPicker(this);
         npStepMagnitude.setMaxValue(100);
         npStepMagnitude.setMinValue(10);
+        magnitude = Integer.parseInt(txtStepMagnitude.getText().toString());
         npStepMagnitude.setValue(magnitude);
-        txtStepMagnitude.setText(magnitude + "");
         npStepMagnitude.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 magnitude = newVal;
-                txtStepMagnitude.setText(magnitude + "");
+                txtStepMagnitude.setText(String.valueOf(magnitude));
             }
         });
         dlStepMagnitude = new AlertDialog.Builder(SettingsActivity.this)
@@ -136,13 +136,13 @@ public class SettingsActivity extends AppCompatActivity {
         final NumberPicker npStepCalorie = new NumberPicker(this);
         npStepCalorie.setMaxValue(300);
         npStepCalorie.setMinValue(50);
+        calorie = Integer.parseInt(txtStepCalorie.getText().toString());
         npStepCalorie.setValue(calorie);
-        txtStepCalorie.setText(calorie + "");
         npStepCalorie.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 calorie = newVal;
-                txtStepCalorie.setText(calorie + "");
+                txtStepCalorie.setText(String.valueOf(calorie));
             }
         });
         dlStepCalorie = new AlertDialog.Builder(SettingsActivity.this)
@@ -167,19 +167,42 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
+                SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
 
                 String strTarget = txtStepTarget.getText().toString();
                 intent.putExtra("target", strTarget);
+                target = Integer.parseInt(strTarget);
+                editor.putInt("target", target);
+                System.out.println("target in settings" + target);
 
                 String strMagnitude = txtStepMagnitude.getText().toString();
                 intent.putExtra("magnitude", strMagnitude);
+                magnitude = Integer.parseInt(strMagnitude);
+                editor.putInt("magnitude", magnitude);
 
                 String strCalorie = txtStepCalorie.getText().toString();
                 intent.putExtra("calorie", strCalorie);
+                calorie = Integer.parseInt(strCalorie);
+                editor.putInt("calorie", calorie);
+
+                editor.commit();
 
                 setResult(RESULT_OK, intent);
                 SettingsActivity.this.finish();
             }
         });
+    }
+
+    // 为设置中各项内容赋初值
+    private void onFillSettings(int t, int m, int c) {
+
+        SharedPreferences pref = getSharedPreferences("settings", MODE_PRIVATE);
+        t = pref.getInt("target", 1000);
+        m = pref.getInt("magnitude", 30);
+        c = pref.getInt("calorie", 220);
+
+        txtStepTarget.setText(String.valueOf(t));
+        txtStepMagnitude.setText(String.valueOf(m));
+        txtStepCalorie.setText(String.valueOf(c));
     }
 }

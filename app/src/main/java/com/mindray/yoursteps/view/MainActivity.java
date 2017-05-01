@@ -218,6 +218,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 if (resultCode == RESULT_OK) {
                     stepTarget = Integer.parseInt(data.getStringExtra("target"));
 
+                    System.out.println("target" + " " + stepTarget);
+
                     stepMagnitude = ((float) Integer.parseInt(data.getStringExtra("magnitude")))/100;
 
                     stepConsumption = ((float) Integer.parseInt(data.getStringExtra("calorie")))/100;
