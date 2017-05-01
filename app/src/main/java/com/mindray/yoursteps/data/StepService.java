@@ -2,6 +2,7 @@ package com.mindray.yoursteps.data;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.PowerManager;
 import android.util.Log;
 
 /**
@@ -26,6 +28,9 @@ public class StepService extends Service implements SensorEventListener {
     private BroadcastReceiver mBroadcastReceiver;
     private final static int MSG = 0;
     private final static int MSG_SERVER = 1;
+
+    // 设备电源锁
+    private PowerManager.WakeLock mWakeLock;
 
     //计步器传感器类型 0-counter 1-detector
     private static int stepSensor = -1;
@@ -99,14 +104,7 @@ public class StepService extends Service implements SensorEventListener {
         //获取传感器管理器的实例
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         addBasePedoListener();
-        //android 4.4以后可以使用计步传感器  在根据API不同版本分别执行addCountStepListener和addBasePedoListener两个方法
-//        int VERSION_CODES = android.os.Build.VERSION.SDK_INT;
-//        Log.d(TAG, VERSION_CODES + "");
-//        if (VERSION_CODES > 19) {//sdk版本
-//            addCountStepListener();
-//        } else {
-//            addBasePedoListener();
-//        }
+        acquireWakeLock(StepService.this);
     }
 
 
@@ -159,6 +157,7 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);//注销广播
+        releaseWakeLock();
         Intent intent = new Intent(this, StepService.class);
         startService(intent);//重新启动StepService 服务
         super.onDestroy();
@@ -172,4 +171,34 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor arg0, int arg1) {
     }
+
+    /**
+     * 申请设备电源锁
+     * @param context
+     */
+    private void acquireWakeLock(Context context)
+    {
+        if (null == mWakeLock)
+        {
+            PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, TAG);
+            if (null != mWakeLock)
+            {
+                mWakeLock.acquire();
+            }
+        }
+    }
+
+    /**
+     * 释放设备电源锁
+     */
+    private void releaseWakeLock()
+    {
+        if (null != mWakeLock)
+        {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
+    }
+    // 服务启动时申请设备电源锁，服务退出时释放设备电源锁
 }
