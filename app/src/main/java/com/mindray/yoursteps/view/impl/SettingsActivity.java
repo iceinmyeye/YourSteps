@@ -173,7 +173,6 @@ public class SettingsActivity extends AppCompatActivity {
                 intent.putExtra("target", strTarget);
                 target = Integer.parseInt(strTarget);
                 editor.putInt("target", target);
-                System.out.println("target in settings" + target);
 
                 String strMagnitude = txtStepMagnitude.getText().toString();
                 intent.putExtra("magnitude", strMagnitude);

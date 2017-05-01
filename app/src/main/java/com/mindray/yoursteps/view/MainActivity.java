@@ -212,13 +212,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case 11:
                 if (resultCode == RESULT_OK) {
                     stepTarget = Integer.parseInt(data.getStringExtra("target"));
-
-                    System.out.println("target" + " " + stepTarget);
 
                     stepMagnitude = ((float) Integer.parseInt(data.getStringExtra("magnitude")))/100;
 
