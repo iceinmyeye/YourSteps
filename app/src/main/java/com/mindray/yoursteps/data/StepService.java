@@ -1,5 +1,7 @@
 package com.mindray.yoursteps.data;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +17,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 import android.util.Log;
+
+import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.view.MainActivity;
 
 /**
  * Created by 董小京 on 2017/4/24.
@@ -76,6 +81,29 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("StepService", "onCreate executed");
+//        //这里开启了一个线程，因为后台服务也是在主线程中进行，这样可以安全点，防止主线程阻塞
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                startStepCount();
+//            }
+//        }).start();
+
+        // 前台通知
+//        Notification notification = new Notification(R.drawable.ic_launcher, "Notification comes", System.currentTimeMillis());
+//        Intent notificationIntent = new Intent(this, MainActivity.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//        notification.setLatestEventInfo(this, "This is a title", "This is Content", pendingIntent);
+//        startForeground(1, notification);
+
+    }
+
+    // onStartCommand()方法，在每次服务启动的时候调用。服务一旦启动，就会立刻执行其中的动作
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
         //这里开启了一个线程，因为后台服务也是在主线程中进行，这样可以安全点，防止主线程阻塞
         new Thread(new Runnable() {
 
@@ -85,11 +113,6 @@ public class StepService extends Service implements SensorEventListener {
             }
         }).start();
 
-    }
-
-    // onStartCommand()方法，在每次服务启动的时候调用。服务一旦启动，就会立刻执行其中的动作
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
     }
 
@@ -103,7 +126,7 @@ public class StepService extends Service implements SensorEventListener {
         //获取传感器管理器的实例
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         addBasePedoListener();
-        acquireWakeLock(StepService.this);
+//        acquireWakeLock(StepService.this);
     }
 
 
@@ -123,25 +146,6 @@ public class StepService extends Service implements SensorEventListener {
         });
     }
 
-//    private void addCountStepListener() {
-//        //android 两种计步方式 detector启动后，确认了，才启动counter.
-//        Sensor detectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);//计步传感器
-//        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);//步行检测传感器
-//        if (countSensor != null) {
-//            stepSensor = 0;
-//            Log.v("base", "countSensor");
-//            //第一个参数是Listener，第二个参数是所得传感器类型，第三个参数值获取传感器信息的频率
-//            sensorManager.registerListener(StepService.this, countSensor, SensorManager.SENSOR_DELAY_UI);
-//        } else if (detectorSensor != null) {
-//            stepSensor = 1;
-//            Log.v("base", "detector");
-//            sensorManager.registerListener(StepService.this, detectorSensor, SensorManager.SENSOR_DELAY_UI);
-//        } else {
-//            Log.v("xf", "Count sensor not available!");
-//            addBasePedoListener();
-//        }
-//    }
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (stepSensor == 0) {
@@ -156,7 +160,7 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);//注销广播
-        releaseWakeLock();
+//        releaseWakeLock();
         Intent intent = new Intent(this, StepService.class);
         startService(intent);//重新启动StepService 服务
         super.onDestroy();
