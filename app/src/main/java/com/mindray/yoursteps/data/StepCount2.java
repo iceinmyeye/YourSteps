@@ -47,7 +47,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
     float diff = 0;
 
     //状态判断，初始为静止状态
-    public static int  stationvalue = 2;
+    public static int  stationvalue = 0;
 
     public void setStation(int stationvalue) {
         this.stationvalue = stationvalue;
@@ -58,16 +58,16 @@ public class StepCount2 implements SensorEventListener, Serializable {
     }
 
     //需要设定快跑的频率和差值
-    float fRunFast = 140;//待定
-    float dRunFast = 30;//可以调整 5 或者12
+    float fRunFast = 230;//待定
+    float dRunFast = 8;//可以调整 5 或者12
 
     //慢跑的频率与差值
     float fRun = 400;
-    float dRun = 6f;
+    float dRun = 5;
 
     //正常走路的频率与差值
     float fWalk = 600;
-    float dWalk = 3;
+    float dWalk = 2;
 
     // float fStand;
     // float dStand;
@@ -209,9 +209,10 @@ public class StepCount2 implements SensorEventListener, Serializable {
         //lastStatus = isDirectionUp;
         if (isPeakOrValley  && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4])  {
-            timeOfValley = System.currentTimeMillis();
+            //timeOfValley = System.currentTimeMillis();
             isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
             valueOfValley = oldValue[2];
+            timeOfValley = System.currentTimeMillis();
             System.out.println("This is test_3");
         }
 
@@ -222,8 +223,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
             valueOfPeak = oldValue[2];  // 数组中2为峰值
             System.out.println("This is test_4");
             //判断是否是干扰
-            if (valueOfPeak - valueOfValley > (0.145 * 9.8)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
-                    && timeOfPeak - timeOfValley > 200 && timeOfPeak - timeOfValley < 2000) {
+            if (valueOfPeak - valueOfValley > (0.1 * 9.8)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
+                    && timeOfPeak - timeOfValley > 150 && timeOfPeak - timeOfValley < 2000) {
                 System.out.println("This is test_5");
                 isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态
@@ -246,17 +247,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
                     System.out.println("This is test_10");
                 }
 
-//                if (isStation % 5 == 0 && CURRENT_STEP >= 5) {
-//                    station(diffValue);
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Message messageStation = new Message();
-//                            messageStation.what = stationvalue;
-//                            handler.sendMessage(messageStation);
-//                        }
-//                    }).start();
-//                }
+//
                 System.out.print("This is test_7");
                 timeOfPeak = System.currentTimeMillis();
                 return true;  //返回新的一步
@@ -277,14 +268,20 @@ public class StepCount2 implements SensorEventListener, Serializable {
     */
     public void station(float[][] diffValue) {
 
-        frequence = (diffValue[0][diffNum - 1] - diffValue[0][0]) / 4;//两个动作的时间差  感觉可能在200-750之间
+        for (int i = 0; i < diffNum; i++) {
+            frequence += diffValue[0][i];
+        }
+        frequence = frequence/5;  //两个动作的时间差  感觉可能在200-750之间
+        System.out.println("frequence"+" "+frequence);
         int tempStation = 0;
         for (int i = 0; i < diffNum; i++) {
             diff += diffValue[1][i];
         }
+        diff = diff/5;           //两个动作的峰谷值差
+        System.out.println("frequence_1"+" "+diff);
         if (frequence < fRunFast && diff > dRunFast) {
             tempStation = 3;
-        } else if (frequence < fRun && diff > dRun) {
+        } else if (frequence > fRunFast && frequence < fRun && diff > dRun) {
             tempStation = 2;
         } else if (frequence < fWalk && diff > dWalk) {
             tempStation = 1;
@@ -320,6 +317,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
                         lastStep = -1;
                         TEMP_STEP = 0;
                         Log.v(TAG, "停止计步：" + CURRENT_STEP);
+                        System.out.print("tingzhi"+" "+CURRENT_STEP);
                     } else {
                         lastStep = CURRENT_STEP;
                     }
