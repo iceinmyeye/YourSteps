@@ -131,13 +131,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
                         textViewStatus.setText("步行");
                         break;
                     case "2":
-                        textViewStatus.setText("慢跑");
+                        textViewStatus.setText("快走/慢跑");
                         break;
                     case "3":
                         textViewStatus.setText("快跑");
                         break;
                     case "4":
-                        textViewStatus.setText("未知");
+                        textViewStatus.setText("判断中...");
                         break;
                     default:
                         textViewStatus.setText("error");
