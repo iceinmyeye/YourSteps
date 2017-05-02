@@ -167,6 +167,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
         return false;
     }
 
+    // 按返回键，活动后台运行
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+        super.onBackPressed();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
