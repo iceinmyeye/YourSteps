@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -33,7 +32,7 @@ public class StepService extends Service implements SensorEventListener {
     private final static String TAG = "SetupService";
 
     //默认为30秒进行一次存储
-    private static int duration = 30000;
+//    private static int duration = 30000;
 //    private static String CURRENTDATE = "";
     private SensorManager sensorManager;
     private StepCount2 stepCount2;
