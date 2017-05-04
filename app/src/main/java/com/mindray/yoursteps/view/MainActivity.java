@@ -119,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
             case MSG_FROM_SERVER:
                 Log.d(TAG, "text=" + msg.getData().getInt("step"));
                 //stepNum = msg.getData().getInt("step");
-                String s =msg.getData().getString("step");
-                String [] s2 = s.split("\\s");
+                String s = msg.getData().getString("step");
+                String[] s2 = s.split("\\s");
                 stepNum = Integer.parseInt(s2[0]);
                 //textStep.setText(s2[0]);//显示步数
-                switch (s2[1]){
+                switch (s2[1]) {
                     case "0":
                         textViewStatus.setText("静止");
                         break;
@@ -227,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 if (resultCode == RESULT_OK) {
                     stepTarget = Integer.parseInt(data.getStringExtra("target"));
 
-                    stepMagnitude = ((float) Integer.parseInt(data.getStringExtra("magnitude")))/100;
+                    stepMagnitude = ((float) Integer.parseInt(data.getStringExtra("magnitude"))) / 100;
 
-                    stepConsumption = ((float) Integer.parseInt(data.getStringExtra("calorie")))/100;
+                    stepConsumption = ((float) Integer.parseInt(data.getStringExtra("calorie"))) / 100;
                 }
                 break;
             default:
