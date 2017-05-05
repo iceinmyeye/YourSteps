@@ -301,6 +301,7 @@ public class StepService extends Service implements SensorEventListener {
 //        unregisterReceiver(mBatInfoReceiver);//注销广播
         Intent intent = new Intent(this, StepService.class);
         startService(intent);//重新启动StepService 服务
+        StepCount2.CURRENT_STEP = 0;
         super.onDestroy();
     }
 
