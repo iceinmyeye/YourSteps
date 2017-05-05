@@ -3,6 +3,7 @@ package com.mindray.yoursteps.view;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.IBinder;
@@ -32,20 +33,15 @@ public class MainActivity extends AppCompatActivity implements Callback {
     public static final int REQUEST_SERVER = 2;//取消服务
     private long TIME_INTERVAL = 500;
 
-    // 初始状态设置的默认值
-    public static final int beginTarget = 1000;
-    public static final float beginMagnitude = 0.3f;
-    public static final float beginCalorie = 2.2f;
-
     private TextView textStep;
     private Handler delayHandler;
     private Messenger messenger;
     private Messenger mGetReplyMessenger = new Messenger(new Handler(this));
 
     private int stepNum; //显示在主界面的步数
-    private int stepTarget = beginTarget;
-    private float stepMagnitude = beginMagnitude;
-    private float stepConsumption = beginCalorie;
+    private int stepTarget;
+    private float stepMagnitude;
+    private float stepConsumption;
     private String status;
     private String distance;
     private String consumption;
@@ -90,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         setSupportActionBar(mToolbar);
 
         initUI();
+        initParam();
         setupService();
     }
 
@@ -100,6 +97,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
         textViewDistance = (TextView) findViewById(R.id.item_distance);
         textViewConsumption = (TextView) findViewById(R.id.item_consumption);
         delayHandler = new Handler(this);
+    }
+
+    private void initParam() {
+        SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
+        stepTarget = prefMain.getInt("target", 1000);
+        stepMagnitude = ((float) prefMain.getInt("magnitude", 30))/100;
+        stepConsumption = ((float) prefMain.getInt("calorie", 220))/100;
     }
 
     // 启动服务
