@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         delayHandler = new Handler(this);
     }
 
+    // 初始化目标步数、步幅以及单位步卡路里
     private void initParam() {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
         stepTarget = prefMain.getInt("target", 1000);
