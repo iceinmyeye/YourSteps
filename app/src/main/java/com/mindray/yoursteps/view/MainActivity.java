@@ -201,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivityForResult(settingsIntent, 11);
                 break;
+            case R.id.action_review:
+                // TODO 过去一周的每日记步数回顾
+                break;
             case R.id.action_reset:
                 Intent intentReset = new Intent(this, StepService.class);
                 stopService(intentReset);
