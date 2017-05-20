@@ -10,18 +10,23 @@
         android:title="@string/menu_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_reset"
+        android:id="@+id/action_review"
         android:orderInCategory="102"
+        android:title="@string/menu_review"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_reset"
+        android:orderInCategory="103"
         android:title="@string/menu_reset"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_quit"
-        android:orderInCategory="103"
+        android:orderInCategory="104"
         android:title="@string/menu_quit"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_about"
-        android:orderInCategory="104"
+        android:orderInCategory="105"
         android:title="@string/menu_about"
         app:showAsAction="never" />
 

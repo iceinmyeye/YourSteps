@@ -3,6 +3,7 @@
 
     <!-- 菜单 -->
     <string name="menu_settings">设置</string>
+    <string name="menu_review">足迹</string>
     <string name="menu_reset">重置</string>
     <string name="menu_quit">退出</string>
     <string name="menu_about">关于</string>
