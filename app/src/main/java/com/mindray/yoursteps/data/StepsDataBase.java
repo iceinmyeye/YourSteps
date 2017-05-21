@@ -28,8 +28,8 @@ public class StepsDataBase extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldversion, int newversion) {
-        db.execSQL("drop table if exists Book");
-        onCreate(db);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//        db.execSQL("drop table if exists Book");
+//        onCreate(db);
     }
 }
