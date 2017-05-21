@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private Messenger mGetReplyMessenger = new Messenger(new Handler(this));
 
     private int stepNum; //显示在主界面的步数
+    private int stepTodayNum; //当天步数
     private int stepTarget;
     private float stepMagnitude;
     private float stepConsumption;
@@ -126,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
             case MSG_FROM_SERVER:
                 stepNum = msg.getData().getInt("key_steps");
                 status = msg.getData().getInt("key_station");
+                stepTodayNum = msg.getData().getInt("key_today_steps");
+                // TODO 主界面设置显示当天步数
                 switch (status) {
                     case 0:
                         textViewStatus.setText("静止");
