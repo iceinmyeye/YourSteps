@@ -148,12 +148,12 @@ public class StepService extends Service implements SensorEventListener {
         List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENTDATE});
         if (list.size() == 0 || list.isEmpty()) {
             //如果获取当天数据为空，则步数为0
-            StepCount2.CURRENT_STEPS = 0;
+            TODAY_STEPS = 0;
             isNewDay = true;  //用于判断是否存储之前的数据，后面会用到
         } else if (list.size() == 1) {
             isNewDay = false;
             //如果数据库中存在当天的数据那么获取数据库中的步数
-            StepCount2.CURRENT_STEPS = Integer.parseInt(list.get(0).getStep());
+            TODAY_STEPS = Integer.parseInt(list.get(0).getStep());
         } else {
             Log.e(TAG, "出错了！");
         }
@@ -336,9 +336,19 @@ public class StepService extends Service implements SensorEventListener {
      * 保存数据
      */
     private void save(){
-        int tempStep=StepCount2.CURRENT_STEPS;
+        int tempStep = StepCount2.CURRENT_STEPS + TODAY_STEPS;
 
         List<StepData> list=DbUtils.getQueryByWhere(StepData.class,"today",new String[]{CURRENTDATE});
+        // 测试用------------------------------------------------------------------------------
+//        System.out.println("steps_list_today " + String.valueOf(list.get(0).getToday()));
+//        System.out.println("steps_list_step " + String.valueOf(list.get(0).getStep()));
+//        System.out.println("steps_list_previousStep " + String.valueOf(list.get(0).getPreviousStep()));
+//
+//        List<StepData> list1=DbUtils.getQueryByWhere(StepData.class,"today",new String[]{new MainActivity().getSomeDate(1)});
+//        System.out.println("steps_list_today " + String.valueOf(list1.get(0).getToday()));
+//        System.out.println("steps_list_step " + String.valueOf(list1.get(0).getStep()));
+//        System.out.println("steps_list_previousStep " + String.valueOf(list1.get(0).getPreviousStep()));
+        // -----------------------------------------------------------------------------------
         if(list.size()==0||list.isEmpty()){
             StepData data=new StepData();
             data.setToday(CURRENTDATE);

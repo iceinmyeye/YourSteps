@@ -24,6 +24,8 @@ import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
@@ -239,5 +241,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
             default:
                 break;
         }
+    }
+
+    // 获取距今n天之前的日期，日期格式为yyyy-MM-dd
+    private String getSomeDate(int n) {
+        long before = n * (24*60*60*1000);
+        Date date = new Date(System.currentTimeMillis() - before);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
     }
 }
