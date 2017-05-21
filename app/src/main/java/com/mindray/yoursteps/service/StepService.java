@@ -79,7 +79,9 @@ public class StepService extends Service implements SensorEventListener {
                         Messenger messenger = msg.replyTo;
                         Message replyMsg = Message.obtain(null, MSG_SERVER);
                         Bundle bundle = new Bundle();
-                        bundle.putString("step", StepCount2.CURRENT_STEPS + " " + StepCount2.getStationvalue());
+                        bundle.putInt("key_steps", StepCount2.CURRENT_STEPS);
+                        bundle.putInt("key_station", StepCount2.getStationvalue());
+//                        bundle.putString("step", StepCount2.CURRENT_STEPS + " " + StepCount2.getStationvalue());
 //                        Log.v("step", String.valueOf(StepCount2.CURRENT_STEPS));
 //                        System.out.println("xxxx");
 //                        System.out.println("test_11" + String.valueOf(StepCount2.stationvalue));

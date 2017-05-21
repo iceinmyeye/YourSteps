@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private int stepTarget;
     private float stepMagnitude;
     private float stepConsumption;
-    private String status;
+    private int status;
     private String distance;
     private String consumption;
 
@@ -123,25 +123,26 @@ public class MainActivity extends AppCompatActivity implements Callback {
         switch (msg.what) {
             case MSG_FROM_SERVER:
                 Log.d(TAG, "text=" + msg.getData().getInt("step"));
-                //stepNum = msg.getData().getInt("step");
-                String s = msg.getData().getString("step");
-                String[] s2 = s.split("\\s");
-                stepNum = Integer.parseInt(s2[0]);
+                stepNum = msg.getData().getInt("key_steps");
+                status = msg.getData().getInt("key_station");
+//                String s = msg.getData().getString("step");
+//                String[] s2 = s.split("\\s");
+//                stepNum = Integer.parseInt(s2[0]);
                 //textStep.setText(s2[0]);//显示步数
-                switch (s2[1]) {
-                    case "0":
+                switch (status) {
+                    case 0:
                         textViewStatus.setText("静止");
                         break;
-                    case "1":
+                    case 1:
                         textViewStatus.setText("步行");
                         break;
-                    case "2":
+                    case 2:
                         textViewStatus.setText("快走/慢跑");
                         break;
-                    case "3":
+                    case 3:
                         textViewStatus.setText("快跑");
                         break;
-                    case "4":
+                    case 4:
                         textViewStatus.setText("判断中...");
                         break;
                     default:
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 distance = df.format(stepNum * stepMagnitude) + " m";
                 consumption = df.format(stepNum * stepConsumption) + " C";
 
-                textStep.setText(s2[0]);//显示记步数
+                textStep.setText(stepNum);//显示记步数
                 textViewDistance.setText(distance);
                 textViewConsumption.setText(consumption);
 
