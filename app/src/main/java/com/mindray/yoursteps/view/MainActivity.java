@@ -24,6 +24,8 @@ import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
@@ -39,10 +41,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private Messenger mGetReplyMessenger = new Messenger(new Handler(this));
 
     private int stepNum; //显示在主界面的步数
+    private int stepTodayNum; //当天步数
     private int stepTarget;
     private float stepMagnitude;
     private float stepConsumption;
-    private String status;
+    private int status;
     private String distance;
     private String consumption;
 
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         delayHandler = new Handler(this);
     }
 
+    // 初始化目标步数、步幅以及单位步卡路里
     private void initParam() {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
         stepTarget = prefMain.getInt("target", 1000);
@@ -121,26 +125,24 @@ public class MainActivity extends AppCompatActivity implements Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_FROM_SERVER:
-                Log.d(TAG, "text=" + msg.getData().getInt("step"));
-                //stepNum = msg.getData().getInt("step");
-                String s = msg.getData().getString("step");
-                String[] s2 = s.split("\\s");
-                stepNum = Integer.parseInt(s2[0]);
-                //textStep.setText(s2[0]);//显示步数
-                switch (s2[1]) {
-                    case "0":
+                stepNum = msg.getData().getInt("key_steps");
+                status = msg.getData().getInt("key_station");
+                stepTodayNum = msg.getData().getInt("key_today_steps");
+                // TODO 主界面设置显示当天步数
+                switch (status) {
+                    case 0:
                         textViewStatus.setText("静止");
                         break;
-                    case "1":
+                    case 1:
                         textViewStatus.setText("步行");
                         break;
-                    case "2":
+                    case 2:
                         textViewStatus.setText("快走/慢跑");
                         break;
-                    case "3":
+                    case 3:
                         textViewStatus.setText("快跑");
                         break;
-                    case "4":
+                    case 4:
                         textViewStatus.setText("判断中...");
                         break;
                     default:
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 distance = df.format(stepNum * stepMagnitude) + " m";
                 consumption = df.format(stepNum * stepConsumption) + " C";
 
-                textStep.setText(s2[0]);//显示记步数
+                textStep.setText(String.valueOf(stepNum));
                 textViewDistance.setText(distance);
                 textViewConsumption.setText(consumption);
 
@@ -242,5 +244,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
             default:
                 break;
         }
+    }
+
+    // 获取距今n天之前的日期，日期格式为yyyy-MM-dd
+    private String getSomeDate(int n) {
+        long before = n * (24*60*60*1000);
+        Date date = new Date(System.currentTimeMillis() - before);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
     }
 }
