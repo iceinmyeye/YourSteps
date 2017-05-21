@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
-import com.mindray.yoursteps.data.StepService;
+import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;

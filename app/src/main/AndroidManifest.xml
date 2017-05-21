@@ -33,7 +33,7 @@
         <activity
             android:name=".view.impl.AboutActivity"
             android:label="@string/menu_about" />
-        <service android:name=".data.StepService"
+        <service android:name=".service.StepService"
             android:process="com.mindray.yoursteps.step"
             android:priority="1000">
             <intent-filter >
@@ -47,6 +47,12 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".service.BootCompleteReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

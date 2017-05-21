@@ -1,11 +1,10 @@
-package com.mindray.yoursteps.data;
+package com.mindray.yoursteps.service;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.CountDownTimer;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -90,7 +89,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
      */
     private int CountTimeState = 0;
 
-    public static int CURRENT_STEP = 0;   //当前步数
+    public static int CURRENT_STEPS = 0;   //当前步数
 
     public static int TEMP_STEP = 0;
     private int lastStep = -1;
@@ -188,7 +187,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
             TEMP_STEP++;
             Log.v(TAG, "计步中 TEMP_STEP:" + TEMP_STEP);
         } else if (CountTimeState == 3) {
-            CURRENT_STEP++;
+            CURRENT_STEPS++;
             if (onSensorChangeListener != null) {
                 onSensorChangeListener.onChange();
             }
@@ -241,7 +240,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
                 isStation += 1;
                 //5次进行一次状态检测
                 System.out.println("This is test_8");
-                if (isStation % 5 == 0 && CURRENT_STEP >= 5) {
+                if (isStation % 5 == 0 && CURRENT_STEPS >= 5) {
                     station(diffValue);
 
                     System.out.println("This is test_10");
@@ -303,7 +302,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         public void onFinish() {
             // 如果计时器正常结束，则开始计步
             time.cancel();
-            CURRENT_STEP += TEMP_STEP;  //存的步数加入
+            CURRENT_STEPS += TEMP_STEP;  //存的步数加入
             lastStep = -1;
 //            CountTimeState = 2;
             Log.v(TAG, "计时正常结束");
@@ -311,15 +310,15 @@ public class StepCount2 implements SensorEventListener, Serializable {
             timer = new Timer(true);
             TimerTask task = new TimerTask() {
                 public void run() {
-                    if (lastStep == CURRENT_STEP) {
+                    if (lastStep == CURRENT_STEPS) {
                         timer.cancel();
                         CountTimeState = 0;
                         lastStep = -1;
                         TEMP_STEP = 0;
-                        Log.v(TAG, "停止计步：" + CURRENT_STEP);
-                        System.out.print("tingzhi"+" "+CURRENT_STEP);
+                        Log.v(TAG, "停止计步：" + CURRENT_STEPS);
+                        System.out.print("tingzhi"+" "+ CURRENT_STEPS);
                     } else {
-                        lastStep = CURRENT_STEP;
+                        lastStep = CURRENT_STEPS;
                     }
                 }
             };
