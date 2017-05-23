@@ -118,13 +118,14 @@ public class StepService extends Service implements SensorEventListener {
             }
         }).start();
 
+        initTodayData();
         startTimeCount();
     }
 
     // onStartCommand()方法，在每次服务启动的时候调用。服务一旦启动，就会立刻执行其中的动作
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        initTodayData();
+//        initTodayData();
         updateNotification("当前步数：" + StepCount2.CURRENT_STEPS + " 步");
         return START_STICKY;
     }
@@ -341,20 +342,14 @@ public class StepService extends Service implements SensorEventListener {
 
         List<StepData> list=DbUtils.getQueryByWhere(StepData.class,"today",new String[]{CURRENTDATE});
         // 测试用------------------------------------------------------------------------------
-//        System.out.println("steps_list_today " + String.valueOf(list.get(0).getToday()));
-//        System.out.println("steps_list_step " + String.valueOf(list.get(0).getStep()));
-//        System.out.println("steps_list_previousStep " + String.valueOf(list.get(0).getPreviousStep()));
-//
-//        List<StepData> list1=DbUtils.getQueryByWhere(StepData.class,"today",new String[]{new MainActivity().getSomeDate(1)});
-//        System.out.println("steps_list_today " + String.valueOf(list1.get(0).getToday()));
-//        System.out.println("steps_list_step " + String.valueOf(list1.get(0).getStep()));
-//        System.out.println("steps_list_previousStep " + String.valueOf(list1.get(0).getPreviousStep()));
+        System.out.println("steps_list_today " + String.valueOf(list.get(0).getToday()));
+        System.out.println("steps_list_step " + String.valueOf(list.get(0).getStep()));
         // -----------------------------------------------------------------------------------
         if(list.size()==0||list.isEmpty()){
             StepData data=new StepData();
             data.setToday(CURRENTDATE);
             data.setStep(tempStep+"");
-            data.setPreviousStep(previousStep+"");
+//            data.setPreviousStep(previousStep+"");
             DbUtils.insert(data);
         }else if(list.size()==1){
             //修改数据

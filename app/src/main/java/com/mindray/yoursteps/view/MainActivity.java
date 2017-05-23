@@ -27,11 +27,12 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.mindray.yoursteps.config.Constant.*;
-
 public class MainActivity extends AppCompatActivity implements Callback {
 
     private static final String TAG = "nsc";
+    public static final int MSG_FROM_CLIENT = 0;
+    public static final int MSG_FROM_SERVER = 1; //返回服务
+    public static final int REQUEST_SERVER = 2; //取消服务
     private long TIME_INTERVAL = 500;
 
     private TextView textStep;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private String consumption;
 
     private TextView textViewStatus;
+    private TextView textViewTodaySteps;
     private TextView textViewDistance;
     private TextView textViewConsumption;
 
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private void initUI() {
         textStep = (TextView) findViewById(R.id.textView_step);
         textViewStatus = (TextView) findViewById(R.id.item_status);
+        textViewTodaySteps = (TextView) findViewById(R.id.item_todaySteps);
         textViewDistance = (TextView) findViewById(R.id.item_distance);
         textViewConsumption = (TextView) findViewById(R.id.item_consumption);
         delayHandler = new Handler(this);
@@ -105,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private void initParam() {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
         stepTarget = prefMain.getInt("target", 1000);
-        stepMagnitude = ((float) prefMain.getInt("magnitude", 30))/100;
-        stepConsumption = ((float) prefMain.getInt("calorie", 220))/100;
+        stepMagnitude = ((float) prefMain.getInt("magnitude", 30)) / 100;
+        stepConsumption = ((float) prefMain.getInt("calorie", 220)) / 100;
     }
 
     // 启动服务
@@ -127,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 stepNum = msg.getData().getInt("key_steps");
                 status = msg.getData().getInt("key_station");
                 stepTodayNum = msg.getData().getInt("key_today_steps");
-                // TODO 主界面设置显示当天步数
                 switch (status) {
                     case 0:
                         textViewStatus.setText("静止");
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 consumption = df.format(stepNum * stepConsumption) + " C";
 
                 textStep.setText(String.valueOf(stepNum));
+                textViewTodaySteps.setText(String.valueOf(stepTodayNum));
                 textViewDistance.setText(distance);
                 textViewConsumption.setText(consumption);
 
@@ -247,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     // 获取距今n天之前的日期，日期格式为yyyy-MM-dd
     private String getSomeDate(int n) {
-        long before = n * (24*60*60*1000);
+        long before = n * (24 * 60 * 60 * 1000);
         Date date = new Date(System.currentTimeMillis() - before);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
