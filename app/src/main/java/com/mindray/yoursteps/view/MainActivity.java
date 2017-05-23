@@ -27,12 +27,11 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.mindray.yoursteps.config.Constant.*;
+
 public class MainActivity extends AppCompatActivity implements Callback {
 
     private static final String TAG = "nsc";
-    public static final int MSG_FROM_CLIENT = 0;
-    public static final int MSG_FROM_SERVER = 1;//返回服务
-    public static final int REQUEST_SERVER = 2;//取消服务
     private long TIME_INTERVAL = 500;
 
     private TextView textStep;
