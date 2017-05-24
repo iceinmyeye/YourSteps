@@ -327,6 +327,7 @@ public class StepService extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         //取消前台进程
+        save(); //程序结束前调用save函数，保证当前的CURRENTSTEP加入到今日步数中并存储
         stopForeground(true);
         DbUtils.closeDb();
         unregisterReceiver(mBatInfoReceiver);//注销广播
