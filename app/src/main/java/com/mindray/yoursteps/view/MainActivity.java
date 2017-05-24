@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
@@ -27,8 +26,6 @@ import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
