@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.AboutActivity;
@@ -30,9 +31,6 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements Callback {
 
     private static final String TAG = "nsc";
-    public static final int MSG_FROM_CLIENT = 0;
-    public static final int MSG_FROM_SERVER = 1; //返回服务
-    public static final int REQUEST_SERVER = 2; //取消服务
     private long TIME_INTERVAL = 500;
 
     private TextView textStep;
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
                 messenger = new Messenger(service);
-                Message msg = Message.obtain(null, MSG_FROM_CLIENT);
+                Message msg = Message.obtain(null, Constant.MSG_FROM_CLIENT);
                 msg.replyTo = mGetReplyMessenger;//replyTo消息管理器
                 Log.d(TAG, "msg =" + msg);
                 messenger.send(msg);//发送消息出去
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case MSG_FROM_SERVER:
+            case Constant.MSG_FROM_SERVER:
                 stepNum = msg.getData().getInt("key_steps");
                 status = msg.getData().getInt("key_station");
                 stepTodayNum = msg.getData().getInt("key_today_steps");
@@ -159,11 +157,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 textViewConsumption.setText(consumption);
 
                 //延时500ms发送值为REQUEST_SERVER 消息
-                delayHandler.sendEmptyMessageDelayed(REQUEST_SERVER, TIME_INTERVAL);
+                delayHandler.sendEmptyMessageDelayed(Constant.REQUEST_SERVER, TIME_INTERVAL);
                 break;
-            case REQUEST_SERVER:
+            case Constant.REQUEST_SERVER:
                 try {
-                    Message message = Message.obtain(null, MSG_FROM_CLIENT);//发送消息
+                    Message message = Message.obtain(null, Constant.MSG_FROM_CLIENT);//发送消息
                     message.replyTo = mGetReplyMessenger;
                     Log.d(TAG, "message=" + message);
                     messenger.send(message);

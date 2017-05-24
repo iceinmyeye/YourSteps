@@ -34,7 +34,7 @@
             android:name=".view.impl.AboutActivity"
             android:label="@string/menu_about" />
         <service android:name=".service.StepService"
-            android:process="com.mindray.yoursteps.step"
+            android:process="com.mindray.step"
             android:priority="1000">
             <intent-filter >
                 <!-- 系统启动完成后会调用-->

@@ -23,8 +23,13 @@ public class StepData {
     private String today;
     @Column("step")
     private String step;
-    @Column("previousStep")
-    private String previousStep;
+
+    public StepData() {}
+
+    public StepData(String today, String step) {
+        this.today = today;
+        this.step = step;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -48,13 +53,5 @@ public class StepData {
 
     public int getId(){
         return id;
-    }
-
-    public String getPreviousStep() {
-        return previousStep;
-    }
-
-    public void setPreviousStep(String previousStep) {
-        this.previousStep = previousStep;
     }
 }

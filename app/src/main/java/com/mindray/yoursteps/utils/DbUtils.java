@@ -19,7 +19,7 @@ public class DbUtils {
     public static void createDb(Context _activity, String DB_NAME) {
         DB_NAME = DB_NAME + ".db";
         if (liteOrm == null) {
-            liteOrm = LiteOrm.newCascadeInstance(_activity, DB_NAME);
+            liteOrm = LiteOrm.newSingleInstance(_activity, DB_NAME);
             liteOrm.setDebugged(true);
         }
     }
