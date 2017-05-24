@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
-import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
@@ -83,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ActivityCollector.addActivity(this);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -186,8 +183,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(conn); //解除服务的绑定
-
-        ActivityCollector.removeActivity(this);
     }
 
     // Start of Menu
