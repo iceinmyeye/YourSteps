@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
@@ -22,6 +23,7 @@ import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.ActivityCollector;
 import com.mindray.yoursteps.view.impl.AboutActivity;
+import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
@@ -203,19 +205,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 startActivityForResult(settingsIntent, 11);
                 break;
             case R.id.action_review:
-                // TODO 过去一周的每日记步数回顾
-                break;
-            case R.id.action_reset:
-                Intent intentReset = new Intent(this, StepService.class);
-                stopService(intentReset);
-                unbindService(conn);
-                bindService(intentReset, conn, BIND_AUTO_CREATE);
-                startService(intentReset);
-                break;
-            case R.id.action_quit:
-                ActivityCollector.finishAll();
-                Intent intentQuit = new Intent(this, StepService.class);
-                stopService(intentQuit);
+                Intent reviewIntent = new Intent(MainActivity.this, ReviewActivity.class);
+                startActivity(reviewIntent);
                 break;
             case R.id.action_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
@@ -244,6 +235,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
             default:
                 break;
         }
+    }
+
+    // 设置进度条
+    private void setProgress() {
+
     }
 
     // 获取距今n天之前的日期，日期格式为yyyy-MM-dd

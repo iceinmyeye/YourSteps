@@ -121,6 +121,15 @@
                     android:layout_alignBaseline="@+id/textView_today_steps"
                     android:layout_alignBottom="@+id/textView_today_steps"
                     android:layout_alignParentEnd="true" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar_todaySteps"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
             <View
