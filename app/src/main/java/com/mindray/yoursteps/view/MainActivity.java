@@ -15,12 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
-import com.mindray.yoursteps.utils.ActivityCollector;
+import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.impl.AboutActivity;
+import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
@@ -30,9 +33,6 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements Callback {
 
     private static final String TAG = "nsc";
-    public static final int MSG_FROM_CLIENT = 0;
-    public static final int MSG_FROM_SERVER = 1;//返回服务
-    public static final int REQUEST_SERVER = 2;//取消服务
     private long TIME_INTERVAL = 500;
 
     private TextView textStep;
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private String consumption;
 
     private TextView textViewStatus;
+    private TextView textViewTodaySteps;
     private TextView textViewDistance;
     private TextView textViewConsumption;
 
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         public void onServiceConnected(ComponentName name, IBinder service) {
             try {
                 messenger = new Messenger(service);
-                Message msg = Message.obtain(null, MSG_FROM_CLIENT);
+                Message msg = Message.obtain(null, Constant.MSG_FROM_CLIENT);
                 msg.replyTo = mGetReplyMessenger;//replyTo消息管理器
                 Log.d(TAG, "msg =" + msg);
                 messenger.send(msg);//发送消息出去
@@ -83,20 +84,22 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCollector.addActivity(this);
-
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         initUI();
         initParam();
         setupService();
+
+        // 在主活动中创建存储目标步数的数据表
+        DbUtils.createDb(this, Constant.TARGET_NAME);
     }
 
     // 启动UI
     private void initUI() {
         textStep = (TextView) findViewById(R.id.textView_step);
         textViewStatus = (TextView) findViewById(R.id.item_status);
+        textViewTodaySteps = (TextView) findViewById(R.id.item_todaySteps);
         textViewDistance = (TextView) findViewById(R.id.item_distance);
         textViewConsumption = (TextView) findViewById(R.id.item_consumption);
         delayHandler = new Handler(this);
@@ -106,8 +109,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private void initParam() {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
         stepTarget = prefMain.getInt("target", 1000);
-        stepMagnitude = ((float) prefMain.getInt("magnitude", 30))/100;
-        stepConsumption = ((float) prefMain.getInt("calorie", 220))/100;
+        stepMagnitude = ((float) prefMain.getInt("magnitude", 30)) / 100;
+        stepConsumption = ((float) prefMain.getInt("calorie", 220)) / 100;
     }
 
     // 启动服务
@@ -124,11 +127,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case MSG_FROM_SERVER:
+            case Constant.MSG_FROM_SERVER:
                 stepNum = msg.getData().getInt("key_steps");
                 status = msg.getData().getInt("key_station");
                 stepTodayNum = msg.getData().getInt("key_today_steps");
-                // TODO 主界面设置显示当天步数
                 switch (status) {
                     case 0:
                         textViewStatus.setText("静止");
@@ -153,15 +155,16 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 consumption = df.format(stepNum * stepConsumption) + " C";
 
                 textStep.setText(String.valueOf(stepNum));
+                textViewTodaySteps.setText(String.valueOf(stepTodayNum));
                 textViewDistance.setText(distance);
                 textViewConsumption.setText(consumption);
 
                 //延时500ms发送值为REQUEST_SERVER 消息
-                delayHandler.sendEmptyMessageDelayed(REQUEST_SERVER, TIME_INTERVAL);
+                delayHandler.sendEmptyMessageDelayed(Constant.REQUEST_SERVER, TIME_INTERVAL);
                 break;
-            case REQUEST_SERVER:
+            case Constant.REQUEST_SERVER:
                 try {
-                    Message message = Message.obtain(null, MSG_FROM_CLIENT);//发送消息
+                    Message message = Message.obtain(null, Constant.MSG_FROM_CLIENT);//发送消息
                     message.replyTo = mGetReplyMessenger;
                     Log.d(TAG, "message=" + message);
                     messenger.send(message);
@@ -184,8 +187,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(conn); //解除服务的绑定
-
-        ActivityCollector.removeActivity(this);
     }
 
     // Start of Menu
@@ -203,19 +204,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 startActivityForResult(settingsIntent, 11);
                 break;
             case R.id.action_review:
-                // TODO 过去一周的每日记步数回顾
-                break;
-            case R.id.action_reset:
-                Intent intentReset = new Intent(this, StepService.class);
-                stopService(intentReset);
-                unbindService(conn);
-                bindService(intentReset, conn, BIND_AUTO_CREATE);
-                startService(intentReset);
-                break;
-            case R.id.action_quit:
-                ActivityCollector.finishAll();
-                Intent intentQuit = new Intent(this, StepService.class);
-                stopService(intentQuit);
+                Intent reviewIntent = new Intent(MainActivity.this, ReviewActivity.class);
+                startActivity(reviewIntent);
                 break;
             case R.id.action_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
@@ -244,13 +234,5 @@ public class MainActivity extends AppCompatActivity implements Callback {
             default:
                 break;
         }
-    }
-
-    // 获取距今n天之前的日期，日期格式为yyyy-MM-dd
-    private String getSomeDate(int n) {
-        long before = n * (24*60*60*1000);
-        Date date = new Date(System.currentTimeMillis() - before);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(date);
     }
 }
