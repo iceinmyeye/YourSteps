@@ -236,12 +236,4 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private void setProgress() {
 
     }
-
-    // 获取距今n天之前的日期，日期格式为yyyy-MM-dd
-    private String getSomeDate(int n) {
-        long before = n * (24 * 60 * 60 * 1000);
-        Date date = new Date(System.currentTimeMillis() - before);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(date);
-    }
 }

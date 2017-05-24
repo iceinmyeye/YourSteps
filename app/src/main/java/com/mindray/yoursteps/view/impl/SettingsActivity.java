@@ -15,6 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.bean.StepData;
+import com.mindray.yoursteps.utils.DbUtils;
+import com.mindray.yoursteps.utils.DateUtils;
+
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -186,6 +191,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 editor.commit();
 
+                saveTarget2DataBase();
+
                 setResult(RESULT_OK, intent);
                 SettingsActivity.this.finish();
             }
@@ -203,5 +210,14 @@ public class SettingsActivity extends AppCompatActivity {
         txtStepTarget.setText(String.valueOf(t));
         txtStepMagnitude.setText(String.valueOf(m));
         txtStepCalorie.setText(String.valueOf(c));
+    }
+
+    // 将设置的目标步数存储到数据库中
+    private void saveTarget2DataBase() {
+
+        List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{DateUtils.getTodayDate()});
+        StepData data = list.get(0);
+        data.setTarget(String.valueOf(target));
+        DbUtils.update(data);
     }
 }

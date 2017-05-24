@@ -26,11 +26,10 @@ import com.mindray.yoursteps.bean.StepData;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.CountDownTimer;
 import com.mindray.yoursteps.utils.DbUtils;
+import com.mindray.yoursteps.utils.DateUtils;
 import com.mindray.yoursteps.view.MainActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -127,17 +126,17 @@ public class StepService extends Service implements SensorEventListener {
     }
 
     // 获取当天日期信息，格式为yyyy-MM-dd
-    private String getTodayDate() {
-        Date date = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(date);
-    }
+//    private String getTodayDate() {
+//        Date date = new Date(System.currentTimeMillis());
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        return sdf.format(date);
+//    }
 
     /**
      * 初始化当天的日期
      */
     private void initTodayData() {
-        CURRENTDATE = getTodayDate();
+        CURRENTDATE = DateUtils.getTodayDate();
 
         //在创建方法中有判断，如果数据库已经创建了不会二次创建的
         DbUtils.createDb(this, Constant.DB_NAME);
