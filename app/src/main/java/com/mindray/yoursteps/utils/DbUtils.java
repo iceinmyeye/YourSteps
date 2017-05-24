@@ -19,6 +19,8 @@ public class DbUtils {
     public static void createDb(Context _activity, String DB_NAME) {
         DB_NAME = DB_NAME + ".db";
         if (liteOrm == null) {
+            // newSingleInstance为独立操作，适用于没有级联关系的单表操作
+            // 而newCascadeInstance为级联操作，适用于多表级联操作
             liteOrm = LiteOrm.newSingleInstance(_activity, DB_NAME);
             liteOrm.setDebugged(true);
         }
