@@ -37,6 +37,9 @@
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
 
+    <!-- 提示 -->
+    <string name="info_alert">您的足迹尚未生成，快去计步吧</string>
+
     <!-- 关于 -->
     <string name="title_about">关于</string>
     <string name="version">版本</string>

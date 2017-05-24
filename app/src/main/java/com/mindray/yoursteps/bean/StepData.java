@@ -23,8 +23,6 @@ public class StepData {
     private String today;
     @Column("step")
     private String step;
-    @Column("target")
-    private String target;
 
     public StepData() {}
 
@@ -32,10 +30,6 @@ public class StepData {
         this.today = today;
         this.step = step;
     }
-
-//    public StepData(String target) {
-//        this.target = target;
-//    }
 
     public void setId(int id) {
         this.id = id;
@@ -59,13 +53,5 @@ public class StepData {
 
     public int getId(){
         return id;
-    }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
     }
 }

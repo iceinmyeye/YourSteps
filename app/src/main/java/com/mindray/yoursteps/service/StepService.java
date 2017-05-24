@@ -125,13 +125,6 @@ public class StepService extends Service implements SensorEventListener {
         return START_STICKY;
     }
 
-    // 获取当天日期信息，格式为yyyy-MM-dd
-//    private String getTodayDate() {
-//        Date date = new Date(System.currentTimeMillis());
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        return sdf.format(date);
-//    }
-
     /**
      * 初始化当天的日期
      */
@@ -305,8 +298,8 @@ public class StepService extends Service implements SensorEventListener {
 
         List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENTDATE});
         // 测试用------------------------------------------------------------------------------
-        System.out.println("steps_list_today " + list.get(0).getToday());
-        System.out.println("steps_list_step " + list.get(0).getStep());
+//        System.out.println("steps_list_today " + list.get(0).getToday());
+//        System.out.println("steps_list_step " + list.get(0).getStep());
         // -----------------------------------------------------------------------------------
         if (list.size() == 0 || list.isEmpty()) {
             StepData data = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));

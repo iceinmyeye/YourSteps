@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
+import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
@@ -89,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
         initUI();
         initParam();
         setupService();
+
+        // 在主活动中创建存储目标步数的数据表
+        DbUtils.createDb(this, Constant.TARGET_NAME);
     }
 
     // 启动UI
@@ -230,10 +234,5 @@ public class MainActivity extends AppCompatActivity implements Callback {
             default:
                 break;
         }
-    }
-
-    // 设置进度条
-    private void setProgress() {
-
     }
 }

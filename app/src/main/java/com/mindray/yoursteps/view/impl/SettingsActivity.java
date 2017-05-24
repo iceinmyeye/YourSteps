@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.StepData;
+import com.mindray.yoursteps.bean.StepTarget;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.utils.DateUtils;
 
@@ -39,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Dialog dlStepMagnitude;
     private Dialog dlStepCalorie;
 
-    private int target;
+    private int target; //目标步数要存储到数据库
     private int magnitude;
     private int calorie;
 
@@ -215,9 +217,18 @@ public class SettingsActivity extends AppCompatActivity {
     // 将设置的目标步数存储到数据库中
     private void saveTarget2DataBase() {
 
-        List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{DateUtils.getTodayDate()});
-        StepData data = list.get(0);
-        data.setTarget(String.valueOf(target));
-        DbUtils.update(data);
+        List<StepTarget> list = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{DateUtils.getTodayDate()});
+
+        if (list.size() == 0 || list.isEmpty()) {
+            StepTarget stepTarget = new StepTarget(DateUtils.getTodayDate(), String.valueOf(target));
+            DbUtils.insert(stepTarget);
+        } else if (list.size() == 1) {
+            StepTarget data = list.get(0);
+            data.setTarget(String.valueOf(target));
+            DbUtils.update(data);
+        }
+
+        List<StepTarget> list1 = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{DateUtils.getTodayDate()});
+        System.out.println("lite-orm target " + list1.get(0).getTarget());
     }
 }
