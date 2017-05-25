@@ -59,7 +59,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".view.impl.ReviewActivity"></activity>
+        <activity android:name=".view.impl.ReviewActivity" />
+        <activity android:name=".view.impl.CalibrationActivity"></activity>
     </application>
 
 </manifest>

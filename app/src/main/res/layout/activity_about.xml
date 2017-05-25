@@ -22,7 +22,7 @@
             android:background="?attr/colorPrimary"
             app:navigationIcon="@mipmap/ic_arrow_back_white_36dp"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/menu_settings" />
+            app:title="@string/menu_about" />
 
     </android.support.design.widget.AppBarLayout>
 

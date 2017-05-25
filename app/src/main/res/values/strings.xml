@@ -4,6 +4,7 @@
     <!-- 菜单 -->
     <string name="menu_settings">设置</string>
     <string name="menu_review">足迹</string>
+    <string name="menu_calibration">校准</string>
     <string name="menu_reset">重置</string>
     <string name="menu_quit">退出</string>
     <string name="menu_about">关于</string>
@@ -39,6 +40,20 @@
 
     <!-- 提示 -->
     <string name="info_alert">您的足迹尚未生成，快去计步吧</string>
+
+    <!-- 校准 -->
+    <string name="calibration_title">校准</string>
+    <string name="calibration_option">下面将进入计步校准功能，请按提示进行操作</string>
+    <string name="calibration_preparation">校准即将开始，请准备</string>
+    <string name="calibration_walkSlowly">请慢走</string>
+    <string name="calibration_interval1">慢走完成</string>
+    <string name="calibration_walkQuickly">请快走</string>
+    <string name="calibration_interval2">快走完成</string>
+    <string name="calibration_runSlowly">请慢跑</string>
+    <string name="calibration_interval3">慢跑完成</string>
+    <string name="calibration_runQuickly">请快跑</string>
+    <string name="calibration_interval4">快跑完成</string>
+    <string name="calibration_finished">测试完成，即将转入软件页面</string>
 
     <!-- 关于 -->
     <string name="title_about">关于</string>

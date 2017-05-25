@@ -26,7 +26,7 @@ import com.mindray.yoursteps.bean.StepData;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.CountDownTimer;
 import com.mindray.yoursteps.utils.DbUtils;
-import com.mindray.yoursteps.utils.DateUtils;
+import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.view.MainActivity;
 
 import java.util.Calendar;
@@ -38,6 +38,9 @@ import java.util.List;
 
 public class StepService extends Service implements SensorEventListener {
     private final static String TAG = "SetupService";
+
+    // 定义存储历史数据需要传递给Review的变量
+    private static String[] reviewStepData;
 
     // 定义今日步数的变量
     private static int TODAY_STEPS;
@@ -74,6 +77,7 @@ public class StepService extends Service implements SensorEventListener {
                         bundle.putInt("key_steps", StepCount2.CURRENT_STEPS);
                         bundle.putInt("key_station", StepCount2.getStationvalue());
                         bundle.putInt("key_today_steps", STEPS_COPY);
+                        bundle.putStringArray("key_last_seven", reviewStepData);
                         replyMsg.setData(bundle);
                         Log.d(TAG, replyMsg + "");
                         messenger.send(replyMsg);
@@ -129,7 +133,10 @@ public class StepService extends Service implements SensorEventListener {
      * 初始化当天的日期
      */
     private void initTodayData() {
-        CURRENTDATE = DateUtils.getTodayDate();
+
+        getLastSevenData();
+
+        CURRENTDATE = StepDateUtils.getTodayDate();
 
         //在创建方法中有判断，如果数据库已经创建了不会二次创建的
         DbUtils.createDb(this, Constant.DB_NAME);
@@ -145,6 +152,21 @@ public class StepService extends Service implements SensorEventListener {
             Log.e(TAG, "出错了！");
         }
         STEPS_COPY = TODAY_STEPS;
+    }
+
+    // 获取过去7天中的数据，这些在Review中需要使用
+    private void getLastSevenData() {
+
+        reviewStepData = new String[7];
+
+        for (int i = 0; i < 7; i++) {
+            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{StepDateUtils.getSomeDate(i+1)});
+            if (listStep.size() == 1) {
+                reviewStepData[i] = listStep.get(0).getStep();
+            } else {
+                reviewStepData[i] = "0";
+            }
+        }
     }
 
     /**
@@ -260,13 +282,15 @@ public class StepService extends Service implements SensorEventListener {
     // 当使用步数传感器或手机内置步数检测器时才调用该函数，
     // 所以使用加速度传感器，该函数未曾调用过
     @Override
-    public void onSensorChanged(SensorEvent event) {}
+    public void onSensorChanged(SensorEvent event) {
+    }
 
     @Override
-    public void onAccuracyChanged(Sensor arg0, int arg1) {}
+    public void onAccuracyChanged(Sensor arg0, int arg1) {
+    }
 
-    class TimeCount extends CountDownTimer {
-        public TimeCount(long millisInFuture, long countDownInterval) {
+    private class TimeCount extends CountDownTimer {
+        TimeCount(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -298,8 +322,14 @@ public class StepService extends Service implements SensorEventListener {
 
         List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENTDATE});
         // 测试用------------------------------------------------------------------------------
-//        System.out.println("steps_list_today " + list.get(0).getToday());
-//        System.out.println("steps_list_step " + list.get(0).getStep());
+        System.out.println("steps_list_today " + list.get(0).getToday());
+        System.out.println("steps_list_step " + list.get(0).getStep());
+
+        String str = StepDateUtils.getSomeDate(1);
+        List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
+        System.out.println("steps_list_size " + list1.size());
+        System.out.println("steps_list_today1 " + list1.get(0).getToday());
+        System.out.println("steps_list_step1 " + list1.get(0).getStep());
         // -----------------------------------------------------------------------------------
         if (list.size() == 0 || list.isEmpty()) {
             StepData data = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));

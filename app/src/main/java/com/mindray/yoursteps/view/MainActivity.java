@@ -1,6 +1,7 @@
 package com.mindray.yoursteps.view;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -9,28 +10,32 @@ import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.bean.StepTarget;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
+import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.impl.AboutActivity;
+import com.mindray.yoursteps.view.impl.CalibrationActivity;
 import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Callback {
+
+    SharedPreferences preferencesMain;
 
     private static final String TAG = "nsc";
     private long TIME_INTERVAL = 500;
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private int status;
     private String distance;
     private String consumption;
+
+    public static String[] reviewSeven;
 
     private TextView textViewStatus;
     private TextView textViewTodaySteps;
@@ -84,15 +91,43 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 当首次运行程序时，需要校准
+        preferencesMain = getSharedPreferences("launch_count", MODE_PRIVATE);
+        int count = preferencesMain.getInt("launch_count", 0);
+
+        if (count == 0) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setMessage(this.getResources().getString(R.string.calibration_option));
+            dialog.setCancelable(false);
+            dialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    intent.setClass(getApplicationContext(),CalibrationActivity.class);
+                    startActivity(intent);
+                }
+            });
+            dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            dialog.show();
+
+            SharedPreferences.Editor editor = preferencesMain.edit();
+
+            editor.putInt("launch_count", ++count);
+
+            editor.commit();
+        }
+
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         initUI();
         initParam();
+        initTargetData();
         setupService();
-
-        // 在主活动中创建存储目标步数的数据表
-        DbUtils.createDb(this, Constant.TARGET_NAME);
     }
 
     // 启动UI
@@ -108,9 +143,23 @@ public class MainActivity extends AppCompatActivity implements Callback {
     // 初始化目标步数、步幅以及单位步卡路里
     private void initParam() {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
-        stepTarget = prefMain.getInt("target", 1000);
+        stepTarget = prefMain.getInt("target", 5000);
         stepMagnitude = ((float) prefMain.getInt("magnitude", 30)) / 100;
         stepConsumption = ((float) prefMain.getInt("calorie", 220)) / 100;
+    }
+
+    // 初始化目标步数数据库
+    private void initTargetData() {
+
+        // 在主活动中创建存储目标步数的数据表
+        DbUtils.createDb(this, Constant.TARGET_NAME);
+
+        List<StepTarget> list = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{StepDateUtils.getTodayDate()});
+
+        if (list.size() == 0 || list.isEmpty()) {
+            StepTarget stepTargetData = new StepTarget(StepDateUtils.getTodayDate(), String.valueOf(stepTarget));
+            DbUtils.insert(stepTargetData);
+        }
     }
 
     // 启动服务
@@ -131,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 stepNum = msg.getData().getInt("key_steps");
                 status = msg.getData().getInt("key_station");
                 stepTodayNum = msg.getData().getInt("key_today_steps");
+                reviewSeven = msg.getData().getStringArray("key_last_seven");
                 switch (status) {
                     case 0:
                         textViewStatus.setText("静止");
@@ -206,6 +256,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
             case R.id.action_review:
                 Intent reviewIntent = new Intent(MainActivity.this, ReviewActivity.class);
                 startActivity(reviewIntent);
+                break;
+            case R.id.action_calibration:
+                Intent calibrationIntent = new Intent(MainActivity.this, CalibrationActivity.class);
+                startActivity(calibrationIntent);
                 break;
             case R.id.action_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
