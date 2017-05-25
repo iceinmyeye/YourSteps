@@ -1,6 +1,7 @@
 package com.mindray.yoursteps.view;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.os.Handler.Callback;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +26,7 @@ import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.impl.AboutActivity;
+import com.mindray.yoursteps.view.impl.CalibrationActivity;
 import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
@@ -31,6 +34,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Callback {
+
+    SharedPreferences preferencesMain;
 
     private static final String TAG = "nsc";
     private long TIME_INTERVAL = 500;
@@ -85,6 +90,36 @@ public class MainActivity extends AppCompatActivity implements Callback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 当首次运行程序时，需要校准
+        preferencesMain = getSharedPreferences("launch_count", MODE_PRIVATE);
+        int count = preferencesMain.getInt("launch_count", 0);
+
+        if (count == 0) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+            dialog.setMessage(this.getResources().getString(R.string.calibration_option));
+            dialog.setCancelable(false);
+            dialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    intent.setClass(getApplicationContext(),CalibrationActivity.class);
+                    startActivity(intent);
+                }
+            });
+            dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            dialog.show();
+
+            SharedPreferences.Editor editor = preferencesMain.edit();
+
+            editor.putInt("launch_count", ++count);
+
+            editor.commit();
+        }
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -221,6 +256,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
             case R.id.action_review:
                 Intent reviewIntent = new Intent(MainActivity.this, ReviewActivity.class);
                 startActivity(reviewIntent);
+                break;
+            case R.id.action_calibration:
+                Intent calibrationIntent = new Intent(MainActivity.this, CalibrationActivity.class);
+                startActivity(calibrationIntent);
                 break;
             case R.id.action_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);

@@ -15,6 +15,11 @@
         android:title="@string/menu_review"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_calibration"
+        android:orderInCategory="103"
+        android:title="@string/menu_calibration"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_about"
         android:orderInCategory="105"
         android:title="@string/menu_about"

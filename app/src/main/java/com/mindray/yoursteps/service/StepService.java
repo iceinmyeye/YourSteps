@@ -289,8 +289,8 @@ public class StepService extends Service implements SensorEventListener {
     public void onAccuracyChanged(Sensor arg0, int arg1) {
     }
 
-    class TimeCount extends CountDownTimer {
-        public TimeCount(long millisInFuture, long countDownInterval) {
+    private class TimeCount extends CountDownTimer {
+        TimeCount(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
