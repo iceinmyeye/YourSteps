@@ -21,7 +21,7 @@ import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.StepTarget;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
-import com.mindray.yoursteps.utils.DateUtils;
+import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.impl.AboutActivity;
 import com.mindray.yoursteps.view.impl.ReviewActivity;
@@ -119,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
         // 在主活动中创建存储目标步数的数据表
         DbUtils.createDb(this, Constant.TARGET_NAME);
 
-        List<StepTarget> list = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{DateUtils.getTodayDate()});
+        List<StepTarget> list = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{StepDateUtils.getTodayDate()});
 
         if (list.size() == 0 || list.isEmpty()) {
-            StepTarget stepTargetData = new StepTarget(DateUtils.getTodayDate(), String.valueOf(stepTarget));
+            StepTarget stepTargetData = new StepTarget(StepDateUtils.getTodayDate(), String.valueOf(stepTarget));
             DbUtils.insert(stepTargetData);
         }
     }

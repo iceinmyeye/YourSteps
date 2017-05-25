@@ -20,14 +20,13 @@ import android.os.Messenger;
 import android.os.PowerManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.util.TimeUtils;
 
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.StepData;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.CountDownTimer;
 import com.mindray.yoursteps.utils.DbUtils;
-import com.mindray.yoursteps.utils.DateUtils;
+import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.view.MainActivity;
 
 import java.util.Calendar;
@@ -137,7 +136,7 @@ public class StepService extends Service implements SensorEventListener {
 
         getLastSevenData();
 
-        CURRENTDATE = DateUtils.getTodayDate();
+        CURRENTDATE = StepDateUtils.getTodayDate();
 
         //在创建方法中有判断，如果数据库已经创建了不会二次创建的
         DbUtils.createDb(this, Constant.DB_NAME);
@@ -161,7 +160,7 @@ public class StepService extends Service implements SensorEventListener {
         reviewStepData = new String[7];
 
         for (int i = 0; i < 7; i++) {
-            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{DateUtils.getSomeDate(i+1)});
+            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{StepDateUtils.getSomeDate(i+1)});
             if (listStep.size() == 1) {
                 reviewStepData[i] = listStep.get(0).getStep();
             } else {
@@ -326,7 +325,7 @@ public class StepService extends Service implements SensorEventListener {
         System.out.println("steps_list_today " + list.get(0).getToday());
         System.out.println("steps_list_step " + list.get(0).getStep());
 
-        String str = DateUtils.getSomeDate(1);
+        String str = StepDateUtils.getSomeDate(1);
         List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
         System.out.println("steps_list_size " + list1.size());
         System.out.println("steps_list_today1 " + list1.get(0).getToday());

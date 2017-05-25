@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by 董小京 on 2017/5/24.
  */
 
-public class DateUtils {
+public class StepDateUtils {
 
     // 获取当天日期信息，格式为yyyy-MM-dd
     public static String getTodayDate() {

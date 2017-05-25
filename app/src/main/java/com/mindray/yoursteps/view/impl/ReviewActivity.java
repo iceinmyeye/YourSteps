@@ -10,11 +10,8 @@ import android.widget.ListView;
 
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.Review;
-import com.mindray.yoursteps.bean.StepData;
 import com.mindray.yoursteps.bean.StepTarget;
-import com.mindray.yoursteps.config.Constant;
-import com.mindray.yoursteps.service.StepService;
-import com.mindray.yoursteps.utils.DateUtils;
+import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.MainActivity;
 import com.mindray.yoursteps.view.adapter.ReviewAdapter;
@@ -52,7 +49,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         for (int i = 1; i < 8; i++) {
 
-            List<StepTarget> listTarget = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{DateUtils.getSomeDate(i)});
+            List<StepTarget> listTarget = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{StepDateUtils.getSomeDate(i)});
 
             if (listTarget.size() == 0 || listTarget.isEmpty()) {
 
