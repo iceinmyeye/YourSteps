@@ -12,8 +12,11 @@ import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.Review;
 import com.mindray.yoursteps.bean.StepData;
 import com.mindray.yoursteps.bean.StepTarget;
+import com.mindray.yoursteps.config.Constant;
+import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.DateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
+import com.mindray.yoursteps.view.MainActivity;
 import com.mindray.yoursteps.view.adapter.ReviewAdapter;
 
 import java.util.ArrayList;
@@ -49,19 +52,16 @@ public class ReviewActivity extends AppCompatActivity {
 
         for (int i = 1; i < 8; i++) {
 
-            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{DateUtils.getSomeDate(i)});
-
             List<StepTarget> listTarget = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{DateUtils.getSomeDate(i)});
 
-            if (listStep.size() == 0 || listStep.isEmpty()
-                    || listTarget.size() == 0 || listTarget.isEmpty()) {
+            if (listTarget.size() == 0 || listTarget.isEmpty()) {
 
                 exist++;
 
-            } else if (listStep.size() == 1 && listTarget.size() == 1) {
+            } else if (listTarget.size() == 1) {
 
-                String reviewDate = listStep.get(0).getToday();
-                String reviewStep = listStep.get(0).getStep();
+                String reviewDate = listTarget.get(0).getDate();
+                String reviewStep = MainActivity.reviewSeven[i-1];
                 String reviewTarget = listTarget.get(0).getTarget();
                 Review review = new Review(reviewDate, reviewStep, reviewTarget);
                 reviewList.add(review);

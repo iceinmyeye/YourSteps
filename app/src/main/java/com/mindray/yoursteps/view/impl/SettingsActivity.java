@@ -81,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 目标步数
         final NumberPicker npStepTarget = new NumberPicker(this);
-        npStepTarget.setMaxValue(10000);
+        npStepTarget.setMaxValue(50000);
         npStepTarget.setMinValue(100);
         target = Integer.parseInt(txtStepTarget.getText().toString());
         npStepTarget.setValue(target);
@@ -205,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void onFillSettings(int t, int m, int c) {
 
         SharedPreferences pref = getSharedPreferences("settings", MODE_PRIVATE);
-        t = pref.getInt("target", 1000);
+        t = pref.getInt("target", 5000);
         m = pref.getInt("magnitude", 30);
         c = pref.getInt("calorie", 220);
 
