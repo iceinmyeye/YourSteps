@@ -27,6 +27,14 @@ public class StepTarget {
         this.target = target;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
