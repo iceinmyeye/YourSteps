@@ -24,15 +24,9 @@ public class StepData {
     @Column("step")
     private String step;
 
-    public StepData() {}
-
     public StepData(String today, String step) {
         this.today = today;
         this.step = step;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getToday() {
@@ -49,9 +43,5 @@ public class StepData {
 
     public void setStep(String step) {
         this.step = step;
-    }
-
-    public int getId(){
-        return id;
     }
 }

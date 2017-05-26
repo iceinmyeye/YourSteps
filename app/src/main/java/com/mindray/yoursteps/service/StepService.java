@@ -322,20 +322,18 @@ public class StepService extends Service implements SensorEventListener {
 
         List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENTDATE});
         // 测试用------------------------------------------------------------------------------
-        System.out.println("steps_list_today " + list.get(0).getToday());
-        System.out.println("steps_list_step " + list.get(0).getStep());
+//        System.out.println("steps_list_today " + list.get(0).getToday());
+//        System.out.println("steps_list_step " + list.get(0).getStep());
 
-        String str = StepDateUtils.getSomeDate(1);
-        List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
-        System.out.println("steps_list_size " + list1.size());
-        System.out.println("steps_list_today1 " + list1.get(0).getToday());
-        System.out.println("steps_list_step1 " + list1.get(0).getStep());
+//        String str = StepDateUtils.getSomeDate(1);
+//        List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
+//        System.out.println("steps_list_size " + list1.size());
+//        System.out.println("steps_list_today1 " + list1.get(0).getToday());
+//        System.out.println("steps_list_step1 " + list1.get(0).getStep());
         // -----------------------------------------------------------------------------------
         if (list.size() == 0 || list.isEmpty()) {
-            StepData data = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));
-            data.setToday(CURRENTDATE);
-            data.setStep(String.valueOf(STEPS_COPY));
-            DbUtils.insert(data);
+            StepData saveData = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));
+            DbUtils.insert(saveData);
         } else if (list.size() == 1) {
             //修改数据
             StepData data = list.get(0);

@@ -65,6 +65,13 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
     @Override
+    public void onBackPressed() {
+        calibrationTag = 0;
+        calibrationTime.cancel();
+        this.finish();
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event) {
         float x =  event.values[0];
         float y =  event.values[1];
@@ -151,6 +158,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 default:
                     Toast.makeText(CalibrationActivity.this,
                             getResources().getString(R.string.calibration_finished), Toast.LENGTH_SHORT).show();
+                    calibrationTag = 0;
+                    //CalibrationActivity.this.finish();
+                    calibrationTime.cancel();
+
             }
         }
 

@@ -79,4 +79,10 @@ public class ReviewActivity extends AppCompatActivity {
             dialog.show();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        DbUtils.closeDb();
+        super.onDestroy();
+    }
 }
