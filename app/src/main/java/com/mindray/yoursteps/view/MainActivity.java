@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initUI();
+        initParam();
+
         // 当首次运行程序时，需要校准
         preferencesMain = getSharedPreferences("launch_count", MODE_PRIVATE);
         int count = preferencesMain.getInt("launch_count", 0);
@@ -124,8 +127,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        initUI();
-        initParam();
         initTargetData();
         setupService();
     }
