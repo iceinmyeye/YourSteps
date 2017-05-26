@@ -205,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("settings", MODE_PRIVATE);
         t = pref.getInt("target", 5000);
         m = pref.getInt("magnitude", 30);
-        c = pref.getInt("calorie", 220);
+        c = pref.getInt("calorie", 160);
 
         txtStepTarget.setText(String.valueOf(t));
         txtStepMagnitude.setText(String.valueOf(m));
