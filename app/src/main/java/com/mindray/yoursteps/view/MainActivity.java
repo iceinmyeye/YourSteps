@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private TextView textViewDistance;
     private TextView textViewConsumption;
 
-    DecimalFormat df = new DecimalFormat("#.0"); // 数据显示格式
+    DecimalFormat df = new DecimalFormat("#0.0"); // 数据显示格式
 
     // 定义ServiceConnection对象
     ServiceConnection conn = new ServiceConnection() {
