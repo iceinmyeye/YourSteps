@@ -47,7 +47,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         int exist = 0;
 
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 30; i++) {
 
             List<StepTarget> listTarget = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{StepDateUtils.getSomeDate(i)});
 
@@ -66,7 +66,7 @@ public class ReviewActivity extends AppCompatActivity {
         }
 
         // exist的值大于6，即7次循环判断结果均为无历史数据
-        if (exist > 6) {
+        if (exist > 28) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(ReviewActivity.this);
             dialog.setMessage(this.getResources().getString(R.string.info_alert));
             dialog.setCancelable(false);

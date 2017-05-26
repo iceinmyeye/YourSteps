@@ -21,8 +21,8 @@
 
     <string name="step_status">运动状态：</string>
     <string name="step_distance">当前距离：</string>
-    <string name="step_todayStep">今日步数</string>
-    <string name="step_consumption">卡路里消耗：</string>
+    <string name="step_todayStep">今日步数：</string>
+    <string name="step_consumption">每日卡路里：</string>
 
     <!-- 运动等级 -->
     <string name="step_status_still">静止</string>

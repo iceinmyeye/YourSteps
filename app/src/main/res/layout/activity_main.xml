@@ -48,7 +48,6 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="TextView"
             android:textColor="@color/white"
             android:textSize="30sp"
             tools:ignore="HardcodedText" />
@@ -87,7 +86,6 @@
                     android:layout_alignBottom="@+id/textView_status"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="25dp"
-                    android:text="TextView"
                     android:textSize="22sp" />
 
             </RelativeLayout>
@@ -116,7 +114,6 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
-                    android:text="TextView"
                     android:textSize="22sp"
                     android:layout_alignBaseline="@+id/textView_today_steps"
                     android:layout_alignBottom="@+id/textView_today_steps"
@@ -151,7 +148,6 @@
                     android:layout_alignBottom="@+id/textView_distance"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="23dp"
-                    android:text="TextView"
                     android:textSize="22sp" />
             </RelativeLayout>
 
@@ -182,7 +178,6 @@
                     android:layout_alignBottom="@+id/textView5"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="22dp"
-                    android:text="TextView"
                     android:textSize="22sp" />
             </RelativeLayout>
         </LinearLayout>

@@ -29,6 +29,14 @@ public class StepData {
         this.step = step;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getToday() {
         return today;
     }

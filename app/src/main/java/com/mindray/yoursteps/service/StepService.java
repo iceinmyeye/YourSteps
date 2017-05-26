@@ -157,9 +157,9 @@ public class StepService extends Service implements SensorEventListener {
     // 获取过去7天中的数据，这些在Review中需要使用
     private void getLastSevenData() {
 
-        reviewStepData = new String[7];
+        reviewStepData = new String[30];
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 30; i++) {
             List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{StepDateUtils.getSomeDate(i+1)});
             if (listStep.size() == 1) {
                 reviewStepData[i] = listStep.get(0).getStep();
@@ -324,12 +324,16 @@ public class StepService extends Service implements SensorEventListener {
         // 测试用------------------------------------------------------------------------------
 //        System.out.println("steps_list_today " + list.get(0).getToday());
 //        System.out.println("steps_list_step " + list.get(0).getStep());
-
+//
 //        String str = StepDateUtils.getSomeDate(1);
 //        List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
 //        System.out.println("steps_list_size " + list1.size());
 //        System.out.println("steps_list_today1 " + list1.get(0).getToday());
 //        System.out.println("steps_list_step1 " + list1.get(0).getStep());
+//        for (int i = 1; i < 8; i++) {
+//            StepData tempData = new StepData(StepDateUtils.getSomeDate(i), String.valueOf(i * 1000));
+//            DbUtils.insert(tempData);
+//        }
         // -----------------------------------------------------------------------------------
         if (list.size() == 0 || list.isEmpty()) {
             StepData saveData = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));

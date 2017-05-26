@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private TextView textViewDistance;
     private TextView textViewConsumption;
 
-    DecimalFormat df = new DecimalFormat("#.0"); // 数据显示格式
+    DecimalFormat df = new DecimalFormat("#0.0"); // 数据显示格式
 
     // 定义ServiceConnection对象
     ServiceConnection conn = new ServiceConnection() {
@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initUI();
+        initParam();
+
         // 当首次运行程序时，需要校准
         preferencesMain = getSharedPreferences("launch_count", MODE_PRIVATE);
         int count = preferencesMain.getInt("launch_count", 0);
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent();
-                    intent.setClass(getApplicationContext(),CalibrationActivity.class);
+                    intent.setClass(getApplicationContext(), CalibrationActivity.class);
                     startActivity(intent);
                 }
             });
@@ -124,8 +127,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        initUI();
-        initParam();
         initTargetData();
         setupService();
     }
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         SharedPreferences prefMain = getSharedPreferences("settings", MODE_PRIVATE);
         stepTarget = prefMain.getInt("target", 5000);
         stepMagnitude = ((float) prefMain.getInt("magnitude", 30)) / 100;
-        stepConsumption = ((float) prefMain.getInt("calorie", 220)) / 100;
+        stepConsumption = ((float) prefMain.getInt("calorie", 160)) / 2;
     }
 
     // 初始化目标步数数据库
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                         break;
                 }
                 distance = df.format(stepNum * stepMagnitude) + " m";
-                consumption = df.format(stepNum * stepConsumption) + " C";
+                consumption = df.format((stepTodayNum * stepConsumption) / 9240) + " g";
 
                 textStep.setText(String.valueOf(stepNum));
                 textViewTodaySteps.setText(String.valueOf(stepTodayNum));
