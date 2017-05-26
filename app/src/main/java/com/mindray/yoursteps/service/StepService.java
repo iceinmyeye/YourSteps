@@ -332,10 +332,10 @@ public class StepService extends Service implements SensorEventListener {
         System.out.println("steps_list_step1 " + list1.get(0).getStep());
         // -----------------------------------------------------------------------------------
         if (list.size() == 0 || list.isEmpty()) {
-            StepData data = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));
-            data.setToday(CURRENTDATE);
-            data.setStep(String.valueOf(STEPS_COPY));
-            DbUtils.insert(data);
+            StepData saveData = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));
+//            data.setToday(CURRENTDATE);
+//            data.setStep(String.valueOf(STEPS_COPY));
+            DbUtils.insert(saveData);
         } else if (list.size() == 1) {
             //修改数据
             StepData data = list.get(0);
