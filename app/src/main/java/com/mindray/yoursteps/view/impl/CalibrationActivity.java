@@ -77,16 +77,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         float y =  event.values[1];
         float z =  event.values[2];
         switch (calibrationTag) {
-            case 0:
+            case 1:
                 sb0.append(x+" "+y+" "+z+" ");
                 break;
-            case 1:
+            case 2:
                 sb1.append(x+" "+y+" "+z+" ");
                 break;
-            case 2:
+            case 3:
                 sb2.append(x+" "+y+" "+z+" ");
                 break;
-            case 3:
+            case 4:
                 sb3.append(x+" "+y+" "+z+" ");
                 break;
             default:
@@ -135,8 +135,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-    class TimeCount extends CountDownTimer {
-        public TimeCount(long millisInFuture, long countDownInterval) {
+    private class TimeCount extends CountDownTimer {
+        TimeCount(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -159,7 +159,6 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     Toast.makeText(CalibrationActivity.this,
                             getResources().getString(R.string.calibration_finished), Toast.LENGTH_SHORT).show();
                     calibrationTag = 0;
-                    //CalibrationActivity.this.finish();
                     calibrationTime.cancel();
 
             }
