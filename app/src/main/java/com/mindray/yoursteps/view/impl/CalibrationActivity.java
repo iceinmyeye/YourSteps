@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.utils.CountDownTimer;
+import com.mindray.yoursteps.utils.VibrateUtil;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -31,8 +34,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private StringBuilder sb3 = new StringBuilder();
 
     private TextView txtCalibration;
+    private TextView txtCountDownTime;
 
     private TimeCount calibrationTime = new TimeCount(241000, 60000);
+    private OneMinuteCount minuteCount = new OneMinuteCount(60000, 1000);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     private void initParam() {
         txtCalibration = (TextView) findViewById(R.id.textView_calibration);
+        txtCountDownTime = (TextView) findViewById(R.id.textView_calibrationCount);
+
         txtCalibration.setText(getResources().getString(R.string.calibration_preparation));
     }
 
@@ -73,21 +80,21 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x =  event.values[0];
-        float y =  event.values[1];
-        float z =  event.values[2];
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
         switch (calibrationTag) {
             case 1:
-                sb0.append(x+" "+y+" "+z+" ");
+                sb0.append(x + " " + y + " " + z + " ");
                 break;
             case 2:
-                sb1.append(x+" "+y+" "+z+" ");
+                sb1.append(x + " " + y + " " + z + " ");
                 break;
             case 3:
-                sb2.append(x+" "+y+" "+z+" ");
+                sb2.append(x + " " + y + " " + z + " ");
                 break;
             case 4:
-                sb3.append(x+" "+y+" "+z+" ");
+                sb3.append(x + " " + y + " " + z + " ");
                 break;
             default:
                 break;
@@ -95,7 +102,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
 
         String str0 = sb0.toString();
@@ -111,29 +118,29 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         save(str3, "runQuickly");
     }
 
-    public void save(String input, String fileName){
-        FileOutputStream out =null;
+    public void save(String input, String fileName) {
+        FileOutputStream out = null;
         BufferedWriter writer = null;
-        try{
+        try {
             out = openFileOutput(fileName, Context.MODE_PRIVATE);
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(input);
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            try{
-                if(writer !=null){
+        } finally {
+            try {
+                if (writer != null) {
                     writer.close();
                 }
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 
     private class TimeCount extends CountDownTimer {
         TimeCount(long millisInFuture, long countDownInterval) {
@@ -145,21 +152,25 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             switch (calibrationTag) {
                 case 0:
                     walkSlowly();
+                    minuteCount.start();
                     break;
                 case 1:
                     walkQuickly();
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    minuteCount.start();
                     break;
                 case 2:
                     runSlowly();
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    minuteCount.start();
                     break;
                 case 3:
                     runQuickly();
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    minuteCount.start();
                     break;
                 default:
-                    Toast.makeText(CalibrationActivity.this,
-                            getResources().getString(R.string.calibration_finished), Toast.LENGTH_SHORT).show();
-                    calibrationTag = 0;
-                    calibrationTime.cancel();
+                    break;
 
             }
         }
@@ -167,7 +178,28 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         @Override
         public void onFinish() {
 
+            VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+            Toast.makeText(CalibrationActivity.this,
+                    getResources().getString(R.string.calibration_finished), Toast.LENGTH_LONG).show();
+            calibrationTag = 0;
+            calibrationTime.cancel();
             CalibrationActivity.this.finish();
+        }
+    }
+
+    private class OneMinuteCount extends CountDownTimer {
+        OneMinuteCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            txtCountDownTime.setText(String.valueOf(millisUntilFinished / 1000));
+        }
+
+        @Override
+        public void onFinish() {
+            minuteCount.cancel();
         }
     }
 
