@@ -43,7 +43,7 @@
 
     <!-- 校准 -->
     <string name="calibration_title">校准</string>
-    <string name="calibration_option">下面将进入计步校准功能，请按提示进行操作</string>
+    <string name="calibration_option">下面将进入计步校准功能，请选择空旷地带，按提示分别进行慢走、快走、慢跑以及快跑</string>
     <string name="calibration_preparation">校准即将开始，请准备</string>
     <string name="calibration_walkSlowly">请慢走</string>
     <string name="calibration_interval1">慢走完成</string>

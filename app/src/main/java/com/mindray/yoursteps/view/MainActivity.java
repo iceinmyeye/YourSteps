@@ -260,8 +260,23 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 startActivity(reviewIntent);
                 break;
             case R.id.action_calibration:
-                Intent calibrationIntent = new Intent(MainActivity.this, CalibrationActivity.class);
-                startActivity(calibrationIntent);
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setMessage(this.getResources().getString(R.string.calibration_option));
+                dialog.setCancelable(false);
+                dialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent calibrationIntent = new Intent(MainActivity.this, CalibrationActivity.class);
+                        startActivity(calibrationIntent);
+                    }
+                });
+                dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                dialog.show();
+
                 break;
             case R.id.action_about:
                 Intent intentAbout = new Intent(this, AboutActivity.class);
