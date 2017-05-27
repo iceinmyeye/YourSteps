@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     @Override
     protected void onDestroy() {
+        DbUtils.closeDb(); //数据库在主活动中创建，在主活动结束时关闭
         super.onDestroy();
         unbindService(conn); //解除服务的绑定
     }

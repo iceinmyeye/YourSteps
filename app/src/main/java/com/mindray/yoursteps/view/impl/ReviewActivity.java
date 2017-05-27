@@ -11,6 +11,7 @@ import android.widget.ListView;
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.Review;
 import com.mindray.yoursteps.bean.StepTarget;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.view.MainActivity;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewActivity extends AppCompatActivity {
+
+    private int exist;
 
     private List<Review> reviewList = new ArrayList<Review>();
 
@@ -44,8 +47,6 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void initReview() {
-
-        int exist = 0;
 
         for (int i = 1; i < 30; i++) {
 
@@ -80,9 +81,15 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void onBackPressed() {
+////        DbUtils.closeDb();
+//        ReviewActivity.this.finish();
+//    }
+
     @Override
     protected void onDestroy() {
-        DbUtils.closeDb();
+//        DbUtils.closeDb();
         super.onDestroy();
     }
 }
