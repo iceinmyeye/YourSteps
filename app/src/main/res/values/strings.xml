@@ -54,6 +54,7 @@
     <string name="calibration_runQuickly">请快跑</string>
     <string name="calibration_interval4">快跑完成</string>
     <string name="calibration_finished">测试完成，转入软件页面</string>
+    <string name="calibration_time">60</string>
 
     <!-- 关于 -->
     <string name="title_about">关于</string>

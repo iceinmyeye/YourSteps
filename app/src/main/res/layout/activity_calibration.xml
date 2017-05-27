@@ -12,6 +12,18 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:text="@string/calibration_walkSlowly"
         android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/textView_calibrationCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:text="@string/calibration_time"
+        android:textColor="@color/darkBlue"
+        android:textSize="40sp"/>
 
 </RelativeLayout>
