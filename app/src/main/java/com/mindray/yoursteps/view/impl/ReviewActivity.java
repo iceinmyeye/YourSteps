@@ -81,15 +81,8 @@ public class ReviewActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-////        DbUtils.closeDb();
-//        ReviewActivity.this.finish();
-//    }
-
     @Override
     protected void onDestroy() {
-//        DbUtils.closeDb();
         super.onDestroy();
     }
 }

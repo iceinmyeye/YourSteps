@@ -321,20 +321,7 @@ public class StepService extends Service implements SensorEventListener {
         STEPS_COPY = StepCount2.CURRENT_STEPS + TODAY_STEPS;
 
         List<StepData> list = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{CURRENTDATE});
-        // 测试用------------------------------------------------------------------------------
-//        System.out.println("steps_list_today " + list.get(0).getToday());
-//        System.out.println("steps_list_step " + list.get(0).getStep());
-//
-//        String str = StepDateUtils.getSomeDate(1);
-//        List<StepData> list1 = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{str});
-//        System.out.println("steps_list_size " + list1.size());
-//        System.out.println("steps_list_today1 " + list1.get(0).getToday());
-//        System.out.println("steps_list_step1 " + list1.get(0).getStep());
-//        for (int i = 1; i < 8; i++) {
-//            StepData tempData = new StepData(StepDateUtils.getSomeDate(i), String.valueOf(i * 1000));
-//            DbUtils.insert(tempData);
-//        }
-        // -----------------------------------------------------------------------------------
+
         if (list.size() == 0 || list.isEmpty()) {
             StepData saveData = new StepData(CURRENTDATE, String.valueOf(STEPS_COPY));
             DbUtils.insert(saveData);
@@ -344,7 +331,6 @@ public class StepService extends Service implements SensorEventListener {
             data.setStep(String.valueOf(STEPS_COPY));
             DbUtils.update(data);
         }
-        System.out.println("test_a1 " + "save() function has been executed " + String.valueOf(STEPS_COPY));
     }
 
     // onDestroy()方法，在服务销毁的时候调用
