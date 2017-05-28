@@ -156,17 +156,17 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     break;
                 case 1:
                     walkQuickly();
-                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 500);
                     minuteCount.start();
                     break;
                 case 2:
                     runSlowly();
-                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 500);
                     minuteCount.start();
                     break;
                 case 3:
                     runQuickly();
-                    VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+                    VibrateUtil.Vibrate(CalibrationActivity.this, 500);
                     minuteCount.start();
                     break;
                 default:
@@ -178,7 +178,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         @Override
         public void onFinish() {
 
-            VibrateUtil.Vibrate(CalibrationActivity.this, 1000);
+            VibrateUtil.Vibrate(CalibrationActivity.this, 500);
             Toast.makeText(CalibrationActivity.this,
                     getResources().getString(R.string.calibration_finished), Toast.LENGTH_LONG).show();
             calibrationTag = 0;
