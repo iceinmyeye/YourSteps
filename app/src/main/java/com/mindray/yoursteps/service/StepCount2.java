@@ -25,6 +25,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
     //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
     final int diffNum = 5;
 
+    static double tValue = 0;
+
     float[][] diffValue = new float[2][diffNum];
 
     //此次波峰值
@@ -100,7 +102,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
     private Timer timer;
 
     // 3秒内不会显示计步，用于屏蔽细微波动
-    private long duration = 3000;
+    private long duration = 3000;//改为1s,可以看一下效果
     private TimeCount time;
 
     OnSensorChangeListener onSensorChangeListener;
@@ -187,7 +189,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
             TEMP_STEP++;
             Log.v(TAG, "计步中 TEMP_STEP:" + TEMP_STEP);
         } else if (CountTimeState == 3) {
-            CURRENT_STEPS++;
+            CURRENT_STEPS++;  //原来为CURRENT_STEPS++；
+            System.out.println("CURRENT_STEPS:"+CURRENT_STEPS);
             if (onSensorChangeListener != null) {
                 onSensorChangeListener.onChange();
             }
@@ -215,16 +218,22 @@ public class StepCount2 implements SensorEventListener, Serializable {
             System.out.println("This is test_3");
         }
 
-        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.5 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
+        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.7 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
             timeOfPeak = System.currentTimeMillis();
             //isPeakOrValley = !isPeakOrValley;  //检测波峰
             valueOfPeak = oldValue[2];  // 数组中2为峰值
             System.out.println("This is test_4");
+            if(stationvalue<3){
+                tValue = 0.2 * 9.8;
+            }
+            else{
+                tValue = 0.3 * 9.8;
+            }                                  //动态阈值
             //判断是否是干扰
-            if (valueOfPeak - valueOfValley > (0.1 * 9.8)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
-                    && timeOfPeak - timeOfValley > 150 && timeOfPeak - timeOfValley < 2000) {
-                System.out.println("This is test_5");
+            if (valueOfPeak - valueOfValley > (tValue)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
+                    && timeOfPeak - timeOfValley > 75 && timeOfPeak - timeOfValley < 2000) {
+                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
                 isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态
                 for (int i = 0; i < diffNum - 1; i++) {
@@ -302,6 +311,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         public void onFinish() {
             // 如果计时器正常结束，则开始计步
             time.cancel();
+            TEMP_STEP += 2;
             CURRENT_STEPS += TEMP_STEP;  //存的步数加入
             lastStep = -1;
 //            CountTimeState = 2;
