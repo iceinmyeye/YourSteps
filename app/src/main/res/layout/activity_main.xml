@@ -27,7 +27,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/darkBlue">
+        android:background="@drawable/campus1">
 
         <TextView
             android:id="@+id/textView"
@@ -37,7 +37,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
             android:text="@string/current_step"
-            android:textColor="@color/darkWhite"
+            android:textColor="@color/primaryDark"
             android:textSize="25sp" />
 
         <TextView
@@ -47,7 +47,8 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:text="0"
+            android:textColor="@color/darkBlue"
             android:textSize="30sp"
             tools:ignore="HardcodedText" />
 
