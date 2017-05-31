@@ -20,6 +20,8 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -32,6 +34,23 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private StringBuilder sb1 = new StringBuilder();
     private StringBuilder sb2 = new StringBuilder();
     private StringBuilder sb3 = new StringBuilder();
+
+    private int i1 = 1;
+    private int i2 = 1;
+    private int i3 = 1;
+    private int i4 = 1;
+    private double[] store1 = new double[2000];
+    private double[] store2 = new double[2000];
+    private double[] store3 = new double[2000];
+    private double[] store4 = new double[2000];
+    private List listMean1 = new ArrayList();
+    private List listMean2 = new ArrayList();
+    private List listMean3 = new ArrayList();
+    private List listMean4 = new ArrayList();
+    private List listVar1 = new ArrayList();
+    private List listVar2 = new ArrayList();
+    private List listVar3 = new ArrayList();
+    private List listVar4 = new ArrayList();
 
     private TextView txtCalibration;
     private TextView txtCountDownTime;
@@ -85,15 +104,31 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         float z = event.values[2];
         switch (calibrationTag) {
             case 1:
+                if (i1 > 300 && i1 < 2301) {
+                    store1[i1 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                }
+                i1++;
                 sb0.append(x + " " + y + " " + z + " ");
                 break;
             case 2:
+                if (i2 > 300 && i2 < 2301) {
+                    store2[i2 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                }
+                i2++;
                 sb1.append(x + " " + y + " " + z + " ");
                 break;
             case 3:
+                if (i3 > 300 && i3 < 2301) {
+                    store3[i3 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                }
+                i3++;
                 sb2.append(x + " " + y + " " + z + " ");
                 break;
             case 4:
+                if (i4 > 300 && i4 < 2301) {
+                    store4[i4 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                }
+                i4++;
                 sb3.append(x + " " + y + " " + z + " ");
                 break;
             default:
@@ -104,6 +139,36 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        double[][] store11 = separateArray(store1);
+        double[][] store22 = separateArray(store2);
+        double[][] store33 = separateArray(store3);
+        double[][] store44 = separateArray(store4);
+
+        for (int i = 0; i < 20; i++) {
+
+            double[] temp1 = new double[100];
+            double[] temp2 = new double[100];
+            double[] temp3 = new double[100];
+            double[] temp4 = new double[100];
+
+            for (int j = 0; j < 100; j++) {
+                temp1[j] = store11[i][j];
+                temp2[j] = store22[i][j];
+                temp3[j] = store33[i][j];
+                temp4[j] = store44[i][j];
+            }
+
+            listMean1.add(calculateMean(temp1));
+            listMean2.add(calculateMean(temp2));
+            listMean3.add(calculateMean(temp3));
+            listMean4.add(calculateMean(temp4));
+
+            listVar1.add(calculateVariance(temp1));
+            listVar2.add(calculateVariance(temp2));
+            listVar3.add(calculateVariance(temp3));
+            listVar4.add(calculateVariance(temp4));
+        }
 
         String str0 = sb0.toString();
         save(str0, "walkSlowly");
@@ -136,6 +201,40 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 e.printStackTrace();
             }
         }
+    }
+
+    // 拆分数组：将2000拆分为20*100
+    private double[][] separateArray(double[] doubles) {
+        double[][] d2 = new double[20][100];
+        for (int j = 0; j < 20; j++) {
+            for (int i = 0; i < doubles.length; i++) {
+                if (i % 100 == 0) {
+                    for (int k = 0; k < 100; k++) {
+                        d2[j][k] = doubles[i];
+                    }
+                }
+            }
+        }
+        return d2;
+    }
+
+    // 计算均值的函数
+    private double calculateMean(double[] doubles) {
+        double sum = 0;
+        for (double d : doubles) {
+            sum += d;
+        }
+        return sum / doubles.length;
+    }
+
+    // 计算方差的函数
+    private double calculateVariance(double[] doubles) {
+        double sum = 0;
+        double mean = calculateMean(doubles);
+        for (double d : doubles) {
+            sum += Math.pow(d - mean, 2);
+        }
+        return sum / doubles.length;
     }
 
     @Override
