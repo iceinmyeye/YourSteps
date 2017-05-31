@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.service.StepCount2;
 import com.mindray.yoursteps.utils.CountDownTimer;
 import com.mindray.yoursteps.utils.VibrateUtil;
 
@@ -27,6 +28,58 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
+
+//    float[] orignValues = new float[3];
+
+    //检测波峰或者波谷,true为当前只检测波峰，false为当前只检测波谷
+    boolean isPeakOrValley = true;
+
+    //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
+    final int diffNum = 5;
+
+    static double tValue = 0.2 * 9.8;
+
+    double[][] diffValue = new double[2][diffNum];
+
+    double[] result = new double[2];
+
+    //此次波峰值
+    double valueOfPeak = 0;
+
+    //此次波谷值
+    double valueOfValley = 0;
+
+    //CSVM的均值
+
+    static int points1 = 0;
+
+    static int points2 = 0;
+
+    static int[] pointsOfPeak = new int[2];     //存波峰位置
+
+    //状态判断，初始为静止状态
+//    public static int  stationvalue = 0;
+
+//    public void setStation(int stationvalue) {
+//        this.stationvalue = stationvalue;
+//    }
+
+//    public static int getStationvalue() {
+//        return StepCount2.stationvalue;
+////    }
+
+    // float fStand;
+    // float dStand;
+
+    //判断连着上升2次，并且下降2次则为峰值所在，数组长度暂时设置为4，后面可调整为3或者5
+    final int judgeNum = 4;
+    double[] isPeakOfWave = new double[judgeNum];
+//
+//    //检测到5个波峰波谷值就进行状态检测
+//    int isStation = 0;
+//
+//    //进行静止判断的时间
+//    long isStandTime = 0;
 
     // 0-慢走；1-快走；2-慢跑；3-快跑
     private static int calibrationTag = 0;
@@ -51,6 +104,19 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private List listVar2 = new ArrayList();
     private List listVar3 = new ArrayList();
     private List listVar4 = new ArrayList();
+    private List listSCVM1 = new ArrayList();
+    private List listSCVM2 = new ArrayList();
+    private List listSCVM3 = new ArrayList();
+    private List listSCVM4 = new ArrayList();
+    private List listPoints1 = new ArrayList();
+    private List listPoints2 = new ArrayList();
+    private List listPoints3 = new ArrayList();
+    private List listPoints4 = new ArrayList();
+
+    public static String[] set = new String[80];
+
+    private int steps = 0;
+    private double diffV = 0;
 
     private TextView txtCalibration;
     private TextView txtCountDownTime;
@@ -97,6 +163,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         this.finish();
     }
 
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         float x = event.values[0];
@@ -105,28 +172,28 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         switch (calibrationTag) {
             case 1:
                 if (i1 > 300 && i1 < 2301) {
-                    store1[i1 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                    store1[i1 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 0.5);
                 }
                 i1++;
                 sb0.append(x + " " + y + " " + z + " ");
                 break;
             case 2:
                 if (i2 > 300 && i2 < 2301) {
-                    store2[i2 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                    store2[i2 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 0.5);
                 }
                 i2++;
                 sb1.append(x + " " + y + " " + z + " ");
                 break;
             case 3:
                 if (i3 > 300 && i3 < 2301) {
-                    store3[i3 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                    store3[i3 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 0.5);
                 }
                 i3++;
                 sb2.append(x + " " + y + " " + z + " ");
                 break;
             case 4:
                 if (i4 > 300 && i4 < 2301) {
-                    store4[i4 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 1 / 2);
+                    store4[i4 - 301] = Math.pow(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2), 0.5);
                 }
                 i4++;
                 sb3.append(x + " " + y + " " + z + " ");
@@ -138,37 +205,6 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
-        double[][] store11 = separateArray(store1);
-        double[][] store22 = separateArray(store2);
-        double[][] store33 = separateArray(store3);
-        double[][] store44 = separateArray(store4);
-
-        for (int i = 0; i < 20; i++) {
-
-            double[] temp1 = new double[100];
-            double[] temp2 = new double[100];
-            double[] temp3 = new double[100];
-            double[] temp4 = new double[100];
-
-            for (int j = 0; j < 100; j++) {
-                temp1[j] = store11[i][j];
-                temp2[j] = store22[i][j];
-                temp3[j] = store33[i][j];
-                temp4[j] = store44[i][j];
-            }
-
-            listMean1.add(calculateMean(temp1));
-            listMean2.add(calculateMean(temp2));
-            listMean3.add(calculateMean(temp3));
-            listMean4.add(calculateMean(temp4));
-
-            listVar1.add(calculateVariance(temp1));
-            listVar2.add(calculateVariance(temp2));
-            listVar3.add(calculateVariance(temp3));
-            listVar4.add(calculateVariance(temp4));
-        }
 
         String str0 = sb0.toString();
         save(str0, "walkSlowly");
@@ -181,6 +217,26 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         String str3 = sb3.toString();
         save(str3, "runQuickly");
+
+        super.onDestroy();
+
+
+    }
+
+    public void setValue(String[] set) {
+        for (int i = 0; i < 20; i++) {
+            set[i] = listMean1.get(i) + " " + listVar1.get(i) + " " + listSCVM1.get(i) + " " + listPoints1.get(i) + "　" + 1;
+        }
+        for (int i = 20; i < 40; i++) {
+            set[i] = listMean2.get(i - 20) + " " + listVar2.get(i - 20) + " " + listSCVM2.get(i - 20) + " " + listPoints2.get(i - 20) + "　" + 2;
+        }
+        for (int i = 40; i < 60; i++) {
+            set[i] = listMean3.get(i - 40) + " " + listVar3.get(i - 40) + " " + listSCVM3.get(i - 40) + " " + listPoints3.get(i - 40) + "　" + 3;
+        }
+        for (int i = 60; i < 80; i++) {
+            set[i] = listMean4.get(i - 60) + " " + listVar4.get(i - 60) + " " + listSCVM4.get(i - 60) + " " + listPoints4.get(i - 60) + "　" + 4;
+
+        }
     }
 
     public void save(String input, String fileName) {
@@ -207,12 +263,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private double[][] separateArray(double[] doubles) {
         double[][] d2 = new double[20][100];
         for (int j = 0; j < 20; j++) {
-            for (int i = 0; i < doubles.length; i++) {
-                if (i % 100 == 0) {
-                    for (int k = 0; k < 100; k++) {
-                        d2[j][k] = doubles[i];
-                    }
-                }
+            for (int k = 0; k < 100; k++) {
+                d2[j][k] = doubles[k + j * 100];
             }
         }
         return d2;
@@ -236,6 +288,115 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         }
         return sum / doubles.length;
     }
+
+    private double[] calculateCSVMAndPoints(double[] doubles) {
+        diffV = 0;
+        points1 = 0;
+        points2 = 0;
+        steps = 0;
+
+
+        for (int i = 0; i < doubles.length; i++) {
+            DetectorNewStep(doubles[i], i);
+        }
+        if (steps > 0) {
+            result[0] = diffV / steps;
+        }
+
+        if (steps > 1) {
+            result[1] = (points2 - points1) / (steps - 1); //平均两步之间的点数！
+        }
+
+        return result;
+    }
+
+    public void DetectorNewStep(double values, int k) {
+
+        if (DetectorPeak(values, isPeakOfWave, k)) {
+            steps++;    //检测到1步
+            if (steps == 1) {
+                points1 = k;
+            } else {
+                points2 = k;
+            }
+        }
+
+        for (int i = 0; i < judgeNum - 1; i++) {
+            isPeakOfWave[i] = isPeakOfWave[i + 1];
+        }
+        isPeakOfWave[judgeNum - 1] = values;   //判断波峰波谷的矩阵更新
+    }
+
+    public boolean DetectorPeak(double newValue, double[] oldValue, int p1) {
+        //lastStatus = isDirectionUp;
+        if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
+                && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4]) {
+            //timeOfValley = System.currentTimeMillis();
+            isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
+            valueOfValley = oldValue[2];
+//            pointsOfValley = p1;
+//            System.out.println("This is test_3");
+        }
+
+        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.7 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
+                && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
+            if (pointsOfPeak[0] == 0) {
+                pointsOfPeak[0] = p1;
+            } else {
+                pointsOfPeak[1] = p1;
+            }
+            //isPeakOrValley = !isPeakOrValley;  //检测波峰
+            valueOfPeak = oldValue[2];  // 数组中2为峰值
+            System.out.println("This is test_4");
+//            if(station<3){
+//                tValue = 0.1 * 9.8;
+//            }
+//            else{
+//                tValue = 0.2 * 9.8;
+//            }                                  //动态阈值
+            //判断是否是干扰
+            if (valueOfPeak - valueOfValley > (tValue)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
+                    && pointsOfPeak[1] - pointsOfPeak[0] > 10 && pointsOfPeak[1] - pointsOfPeak[0] < 88) {
+//                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
+                isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
+                //确认为一个有效的步态
+                for (int i = 0; i < diffNum - 1; i++) {
+                    diffValue[1][i] = diffValue[1][i + 1];
+                    diffValue[0][i] = diffValue[0][i + 1];
+                    //System.out.println("test_11"+" "+ diffValue[0][i]);
+                }
+                System.out.println("This is test_9");
+                diffValue[1][diffNum - 1] = valueOfPeak - valueOfValley;
+
+                diffV += valueOfPeak - valueOfValley;
+
+                diffValue[0][diffNum - 1] = pointsOfPeak[1] - pointsOfPeak[0];  //判断状态用到的5组的时间和幅度差值
+                //是否进行状态判断
+//                isStation += 1;    //不进行状态判断！！ 可以标注掉
+                //5次进行一次状态检测
+                System.out.println("This is test_8");
+//                if (isStation % 5 == 0 && CURRENT_STEPS >= 5) {
+//                    station(diffValue);
+//
+//                    System.out.println("This is test_10");
+//                }
+
+                pointsOfPeak[0] = pointsOfPeak[1]; //留出pointsOfPeak[1]接收新的值
+                System.out.print("This is test_7");
+//                timeOfPeak = System.currentTimeMillis();
+                return true;  //返回新的一步
+
+            } else {
+                isPeakOrValley = !isPeakOrValley;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
+                System.out.println("This is test_5");
+            }
+        }
+
+        System.out.println("This is test_2" + " " + (oldValue[0] - oldValue[1]) + isPeakOrValley);
+
+        return false;
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -278,6 +439,51 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         public void onFinish() {
 
             VibrateUtil.Vibrate(CalibrationActivity.this, 500);
+
+            double[][] store11 = separateArray(store1);
+            double[][] store22 = separateArray(store2);
+            double[][] store33 = separateArray(store3);
+            double[][] store44 = separateArray(store4);
+
+            for (int i = 0; i < 20; i++) {
+
+                double[] temp1 = new double[100];
+                double[] temp2 = new double[100];
+                double[] temp3 = new double[100];
+                double[] temp4 = new double[100];
+
+                for (int j = 0; j < 100; j++) {
+                    temp1[j] = store11[i][j];
+                    temp2[j] = store22[i][j];
+                    temp3[j] = store33[i][j];
+                    temp4[j] = store44[i][j];
+                }
+
+                listMean1.add(calculateMean(temp1));
+                listMean2.add(calculateMean(temp2));
+                listMean3.add(calculateMean(temp3));
+                listMean4.add(calculateMean(temp4));
+
+                listVar1.add(calculateVariance(temp1));
+                listVar2.add(calculateVariance(temp2));
+                listVar3.add(calculateVariance(temp3));
+                listVar4.add(calculateVariance(temp4));
+
+                listSCVM1.add(calculateCSVMAndPoints(temp1)[0]);
+                listSCVM2.add(calculateCSVMAndPoints(temp2)[0]);
+                listSCVM3.add(calculateCSVMAndPoints(temp3)[0]);
+                listSCVM4.add(calculateCSVMAndPoints(temp4)[0]);
+
+                listPoints1.add(calculateCSVMAndPoints(temp1)[1]);
+                listPoints2.add(calculateCSVMAndPoints(temp2)[1]);
+                listPoints3.add(calculateCSVMAndPoints(temp3)[1]);
+                listPoints4.add(calculateCSVMAndPoints(temp4)[1]);
+
+            }
+            setValue(set);
+
+            System.out.println("_STEP" + set);
+
             Toast.makeText(CalibrationActivity.this,
                     getResources().getString(R.string.calibration_finished), Toast.LENGTH_LONG).show();
             calibrationTag = 0;
