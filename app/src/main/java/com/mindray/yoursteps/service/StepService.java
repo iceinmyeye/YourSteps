@@ -373,6 +373,8 @@ public class StepService extends Service implements SensorEventListener {
             // 该项根据实际需要可以进行修改
             if (hour >= 23 || hour <= 6) {
                 mWakeLock.acquire(5000);
+            } else {
+                mWakeLock.acquire(300000);
             }
         }
 
