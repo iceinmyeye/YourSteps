@@ -11,4 +11,5 @@ public class Constant {
     public static final int REQUEST_SERVER = 2;
     public static final String DB_NAME = "basepedo";
     public static final String TARGET_NAME = "pedotarget";
+    public static final String TREE_NAME = "decisiontree";
 }

@@ -75,7 +75,7 @@ public class StepService extends Service implements SensorEventListener {
                         Message replyMsg = Message.obtain(null, MSG_SERVER);
                         Bundle bundle = new Bundle();
                         bundle.putInt("key_steps", StepCount2.CURRENT_STEPS);
-                        bundle.putInt("key_station", StepCount2.getStationvalue());
+                        bundle.putInt("key_station", StepCount2.getDecisionTreeStation());
                         bundle.putInt("key_today_steps", STEPS_COPY);
                         bundle.putStringArray("key_last_seven", reviewStepData);
                         replyMsg.setData(bundle);

@@ -1,4 +1,4 @@
-package com.mindray.yoursteps.view.impl;
+package com.mindray.yoursteps.utils;
 
 /**
  * Created by DuXuan on 2017/5/1.
@@ -53,7 +53,7 @@ public class DataSetUtil {
     /**
      * 获取属性值，唯一值
      *
-     * @param bestAttr
+     * @param atr
      * @param dataset
      * @return
      */
@@ -157,7 +157,7 @@ public class DataSetUtil {
      * 拿出指定属性值对应的子数据集
      *
      * @param dataset
-     * @param bestAttr
+     * @param attrId
      * @param attrValue
      * @return
      */

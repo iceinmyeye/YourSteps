@@ -1,4 +1,4 @@
-package com.mindray.yoursteps.view.impl;
+package com.mindray.yoursteps.bean;
 
 /**
  * Created by DuXuan on 2017/5/1.
@@ -20,7 +20,7 @@ public class TreeNode {
     public static String s = "";
     public static String s2 = "";
 
-    TreeNode() {
+    public TreeNode() {
         attributeValue = new ArrayList<String>();
         child = new ArrayList<TreeNode>();
     }

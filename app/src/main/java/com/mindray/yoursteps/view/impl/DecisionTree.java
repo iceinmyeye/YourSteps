@@ -5,6 +5,9 @@ package com.mindray.yoursteps.view.impl;
  */
 
 
+import com.mindray.yoursteps.bean.TreeNode;
+import com.mindray.yoursteps.utils.DataSetUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -253,129 +256,129 @@ public class DecisionTree {
         return probility1;
     }
 
-    public static void main(String args[]) {
-        // eg 1
-        String attr = "Mean Var CSVM Points";
-        String[] set = CalibrationActivity.set;
-
-        //测试数据
-//        set[0] = "10.6085 5.7470 0.9803 28 1";
-//        set[1] = "10.8130 12.3204 1.1946 28.667 1";
-//        set[2] = "10.0873 10.6999 0.7870 29.5 1";
-//        set[3] = "10.5063 10.9859 0.9803 29.667 1";
-//        set[4] = "10.6270 7.6146 0.9560 28.6667 1";
-//        set[5] = "10.5998 12.7507 1.1606 28.6667 1";
-//        set[6] = "10.5441 11.0925 1.1177 27 1";
-//        set[7] = "10.6023 11.3307 1.0596 29.6667 1";
-//        set[8] = "10.5660 10.0049 1.0389 28.6 1";
-//        set[9] = "10.6416 11.4286 1.1638 29 1";
-//        set[10] = "10.6122 11.0677 1.1407 27.3 1";
-//        set[11] = "10.6986 11.2628 1.1182 28 1";
-//        set[12] = "10.4196 10.3618 1.0591 29.7 1";
+//    public static void main(String args[]) {
+//        // eg 1
+//        String attr = "Mean Var CSVM Points";
+//        String[] set = CalibrationActivity.set;
 //
-//        set[13] = "20.3479 32.5504 1.9154 39 2";
-//        set[14] = "10.2323 28.4069 1.8382 35.5 2";
-//        set[15] = "10.7455 28.4069 1.8382 30.667 2";
-//        set[16] = "10.1051 27.4119 2.2173 30 2";
-//        set[17] = "10.7799 21.6391 1.8945 30 2";
-//        set[18] = "10.8486 22.1199 1.9721 29 2";
-//        set[19] = "10.4915 17.8499 1.7111 30 2";
-//        set[20] = "10.1746 20.2816 1.8701 30 2";
-//        set[21] = "10.8206 16.9738 1.7319 30.3 2";
-//        set[22] = "10.2780 23.75 1.5472 34.5 2";
-//        set[23] = "10.6633 25.2095 2.1551 31.6667 2";
-//        set[24] = "10.7251 15.0332 1.5043 31 2";
-//        set[25] = "10.5555 22.2645 1.9937 31.667 2";
+//        //测试数据
+////        set[0] = "10.6085 5.7470 0.9803 28 1";
+////        set[1] = "10.8130 12.3204 1.1946 28.667 1";
+////        set[2] = "10.0873 10.6999 0.7870 29.5 1";
+////        set[3] = "10.5063 10.9859 0.9803 29.667 1";
+////        set[4] = "10.6270 7.6146 0.9560 28.6667 1";
+////        set[5] = "10.5998 12.7507 1.1606 28.6667 1";
+////        set[6] = "10.5441 11.0925 1.1177 27 1";
+////        set[7] = "10.6023 11.3307 1.0596 29.6667 1";
+////        set[8] = "10.5660 10.0049 1.0389 28.6 1";
+////        set[9] = "10.6416 11.4286 1.1638 29 1";
+////        set[10] = "10.6122 11.0677 1.1407 27.3 1";
+////        set[11] = "10.6986 11.2628 1.1182 28 1";
+////        set[12] = "10.4196 10.3618 1.0591 29.7 1";
+////
+////        set[13] = "20.3479 32.5504 1.9154 39 2";
+////        set[14] = "10.2323 28.4069 1.8382 35.5 2";
+////        set[15] = "10.7455 28.4069 1.8382 30.667 2";
+////        set[16] = "10.1051 27.4119 2.2173 30 2";
+////        set[17] = "10.7799 21.6391 1.8945 30 2";
+////        set[18] = "10.8486 22.1199 1.9721 29 2";
+////        set[19] = "10.4915 17.8499 1.7111 30 2";
+////        set[20] = "10.1746 20.2816 1.8701 30 2";
+////        set[21] = "10.8206 16.9738 1.7319 30.3 2";
+////        set[22] = "10.2780 23.75 1.5472 34.5 2";
+////        set[23] = "10.6633 25.2095 2.1551 31.6667 2";
+////        set[24] = "10.7251 15.0332 1.5043 31 2";
+////        set[25] = "10.5555 22.2645 1.9937 31.667 2";
+////
+////        set[26] = "26.7047 38.1135 2.7494 18.5 3";
+////        set[27] = "11.9901 37.4412 3.5233 17.5 3";
+////        set[28] = "11.6179 33.5767 3.3701 17.5 3";
+////        set[29] = "11.6486 23.4906 2.4 17.2 3";
+////        set[30] = "12.14 33.03 2.7 18.6 3";
+////        set[31] = "12.24 31.2017 2.67 17.6 3";
+////        set[32] = "11.7068 27.6698 2.54 28.6 3";
+////        set[33] = "11.6 26 2.57 18 3";
+////        set[34] = "11.17 22 2.1765 18 3";
+////        set[35] = "11.05 27.82 2.205 19.75 3";
+////        set[36] = "11.9 30 2.72 19 3";
+////        set[37] = "11.74 36 2.95 20.4 3";
+////        set[38] = "12.2 34.05 2.771 20.2 3";
+////
+////        set[39] = "32.2139 56.5 4.24 16.7 4";
+////        set[40] = "31.89 56.45 5.117 14.43 4";
+////        set[41] = "29.21 69.77 5.266 15.14 4";
+////        set[42] = "28.744 64.9159 4.757 15.17 4";
+////        set[43] = "30.01 56.55 5.45 14.856 4";
+////        set[44] = "28.98 60.27 4.83 15.3 4";
+////        set[45] = "29.7 52.94 4.99 15.4 4";
+////        set[46] = "29.83 56.694 4.72 15.5 4";
+////        set[47] = "26.5 69.98 4.93 15.83 4";
+////        set[48] = "26.64 81 5 16 4";
+////        set[49] = "25.74 79 5 16.3 4";
+////        set[50] = "24.41 82.5 4.32 20.2 4";
+////        set[51] = "25 80 4.26 22.4 4";
 //
-//        set[26] = "26.7047 38.1135 2.7494 18.5 3";
-//        set[27] = "11.9901 37.4412 3.5233 17.5 3";
-//        set[28] = "11.6179 33.5767 3.3701 17.5 3";
-//        set[29] = "11.6486 23.4906 2.4 17.2 3";
-//        set[30] = "12.14 33.03 2.7 18.6 3";
-//        set[31] = "12.24 31.2017 2.67 17.6 3";
-//        set[32] = "11.7068 27.6698 2.54 28.6 3";
-//        set[33] = "11.6 26 2.57 18 3";
-//        set[34] = "11.17 22 2.1765 18 3";
-//        set[35] = "11.05 27.82 2.205 19.75 3";
-//        set[36] = "11.9 30 2.72 19 3";
-//        set[37] = "11.74 36 2.95 20.4 3";
-//        set[38] = "12.2 34.05 2.771 20.2 3";
+//        // String[] set = new String[5];
+//        // set[0] = "2 2 2 2 2";
+//        // set[1] = "1 1 1 1 1";
+//        // set[2] = "2 3 3 2 3";
+//        // set[3] = "4 4 4 4 4";
+//        // set[4] = "1 1 1 2 1";
 //
-//        set[39] = "32.2139 56.5 4.24 16.7 4";
-//        set[40] = "31.89 56.45 5.117 14.43 4";
-//        set[41] = "29.21 69.77 5.266 15.14 4";
-//        set[42] = "28.744 64.9159 4.757 15.17 4";
-//        set[43] = "30.01 56.55 5.45 14.856 4";
-//        set[44] = "28.98 60.27 4.83 15.3 4";
-//        set[45] = "29.7 52.94 4.99 15.4 4";
-//        set[46] = "29.83 56.694 4.72 15.5 4";
-//        set[47] = "26.5 69.98 4.93 15.83 4";
-//        set[48] = "26.64 81 5 16 4";
-//        set[49] = "25.74 79 5 16.3 4";
-//        set[50] = "24.41 82.5 4.32 20.2 4";
-//        set[51] = "25 80 4.26 22.4 4";
-
-        // String[] set = new String[5];
-        // set[0] = "2 2 2 2 2";
-        // set[1] = "1 1 1 1 1";
-        // set[2] = "2 3 3 2 3";
-        // set[3] = "4 4 4 4 4";
-        // set[4] = "1 1 1 2 1";
-
-        List<ArrayList<String>> dataset = new ArrayList<ArrayList<String>>();
-        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
-        for (int i = 0; i < set.length; i++) {
-            String[] s = set[i].split(" ");
-            ArrayList<String> list = new ArrayList<String>();
-            for (int j = 0; j < s.length; j++) {
-                list.add((s[j]));
-            }
-            dataset.add(list); // 原始数据获取
-        }
-
-        DecisionTree dt = new DecisionTree();
-        long a = System.currentTimeMillis();
-
-        System.out.println("attribute:" + attribute);
-        TreeNode tree = dt.createDecisionTree(attribute, dataset);
-        tree.print("");
-        long b = System.currentTimeMillis();
-        System.out.println(b - a);
-        // System.out.println(TreeNode.str1);
-        System.out.println(TreeNode.str);
-        for (int i = 0; i < TreeNode.str.size(); i++) {
-            System.out.println(TreeNode.str.get(i));
-            String str1 = TreeNode.str.get(i).get(0);
-            // System.out.println("--------------------------");
-            System.out.println(str1);
-            String[] str2 = str1.split("\\,");
-            System.out.println(str2[0]);
-            String[] str3 = str2[0].split("\\s+");
-            String[] str4 = str2[1].split("\\s+");
-            String str5 = "";
-            for (int j = 1; j < str3.length; j += 2) {
-                str5 += str3[j] + " ";
-            }
-            System.out.println(str5);
-            list.add(str5 + str4[str4.length - 1]);
-        }
-        System.out.println(list);
-        System.out.println(list.size());
-        double[] input = {12.25, 10.10, 3.2, 15.6};
-        station = Integer.parseInt(recognition(list, input));
-        System.out.println("status:" + station);
-
-        //// for(int i=0;i<TreeNode.str.size();i++){
-        //// System.out.println("size:"+ splitV[i].length);
-        //// splitV[i] = TreeNode.str.get(i).get(0).split("\\s+");
-        //// System.out.println("size2:"+ splitV[i].length);
-        //// for(int j=1;j<splitV[i].length-2;j+=2){
-        //// System.out.print(splitV[i][j]+" "); //
-        ////// System.out.print(split[split.length-1]); //运动状态
-        //// }
-        //// System.out.println(splitV[i][splitV[i].length-1]);
-        // }
-    }
+//        List<ArrayList<String>> dataset = new ArrayList<ArrayList<String>>();
+//        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
+//        for (int i = 0; i < set.length; i++) {
+//            String[] s = set[i].split(" ");
+//            ArrayList<String> listDecisionTree = new ArrayList<String>();
+//            for (int j = 0; j < s.length; j++) {
+//                listDecisionTree.add((s[j]));
+//            }
+//            dataset.add(listDecisionTree); // 原始数据获取
+//        }
+//
+//        DecisionTree dt = new DecisionTree();
+//        long a = System.currentTimeMillis();
+//
+//        System.out.println("attribute:" + attribute);
+//        TreeNode tree = dt.createDecisionTree(attribute, dataset);
+//        tree.print("");
+//        long b = System.currentTimeMillis();
+//        System.out.println(b - a);
+//        // System.out.println(TreeNode.str1);
+//        System.out.println(TreeNode.str);
+//        for (int i = 0; i < TreeNode.str.size(); i++) {
+//            System.out.println(TreeNode.str.get(i));
+//            String str1 = TreeNode.str.get(i).get(0);
+//            // System.out.println("--------------------------");
+//            System.out.println(str1);
+//            String[] str2 = str1.split("\\,");
+//            System.out.println(str2[0]);
+//            String[] str3 = str2[0].split("\\s+");
+//            String[] str4 = str2[1].split("\\s+");
+//            String str5 = "";
+//            for (int j = 1; j < str3.length; j += 2) {
+//                str5 += str3[j] + " ";
+//            }
+//            System.out.println(str5);
+//            listDecisionTree.add(str5 + str4[str4.length - 1]);
+//        }
+//        System.out.println(listDecisionTree);
+//        System.out.println(listDecisionTree.size());
+//        double[] input = {12.25, 10.10, 3.2, 15.6};
+//        station = Integer.parseInt(recognition(listDecisionTree, input));
+//        System.out.println("status:" + station);
+//
+//        //// for(int i=0;i<TreeNode.str.size();i++){
+//        //// System.out.println("size:"+ splitV[i].length);
+//        //// splitV[i] = TreeNode.str.get(i).get(0).split("\\s+");
+//        //// System.out.println("size2:"+ splitV[i].length);
+//        //// for(int j=1;j<splitV[i].length-2;j+=2){
+//        //// System.out.print(splitV[i][j]+" "); //
+//        ////// System.out.print(split[split.length-1]); //运动状态
+//        //// }
+//        //// System.out.println(splitV[i][splitV[i].length-1]);
+//        // }
+//    }
 
     public static String recognition(ArrayList<String> list, double[] eigenValues) {
 //		double[] eigenValues = new double[4];

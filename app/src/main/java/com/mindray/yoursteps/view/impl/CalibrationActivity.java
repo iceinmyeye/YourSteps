@@ -11,18 +11,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mindray.yoursteps.R;
-import com.mindray.yoursteps.service.StepCount2;
+import com.mindray.yoursteps.bean.TreeData;
+import com.mindray.yoursteps.bean.TreeNode;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.CountDownTimer;
+import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.utils.VibrateUtil;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.mindray.yoursteps.view.impl.DecisionTree.recognition;
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -32,54 +36,34 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //    float[] orignValues = new float[3];
 
     //检测波峰或者波谷,true为当前只检测波峰，false为当前只检测波谷
-    private boolean isPeakOrValley = true;
+    private boolean isPeakOrValleyStation = true;
 
     //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
-    final int diffNum = 5;
+    final int diffNumStation = 5;
 
-    static double tValue = 0.2 * 9.8;
+    static double tValueStation = 0.2 * 9.8;
 
-    double[][] diffValue = new double[2][diffNum];
+    double[][] diffValueStation = new double[2][diffNumStation];
 
-    double[] result = new double[2];
+    double[] resultStation = new double[2];
 
     //此次波峰值
-    double valueOfPeak = 0;
+    double valueOfPeakStation = 0;
 
     //此次波谷值
-    double valueOfValley = 0;
+    double valueOfValleyStation = 0;
 
     //CSVM的均值
 
-    int points1 = 0;
+    int points1Station = 0;
 
-    int points2 = 0;
+    int points2Station = 0;
 
-    static int[] pointsOfPeak = new int[3];     //存波峰位置
-
-    //状态判断，初始为静止状态
-//    public static int  stationvalue = 0;
-
-//    public void setStation(int stationvalue) {
-//        this.stationvalue = stationvalue;
-//    }
-
-//    public static int getStationvalue() {
-//        return StepCount2.stationvalue;
-////    }
-
-    // float fStand;
-    // float dStand;
+    static int[] pointsOfPeakStation = new int[3];     //存波峰位置
 
     //判断连着上升2次，并且下降2次则为峰值所在，数组长度暂时设置为4，后面可调整为3或者5
-    final int judgeNum = 4;
-    double[] isPeakOfWave = new double[judgeNum];
-//
-//    //检测到5个波峰波谷值就进行状态检测
-//    int isStation = 0;
-//
-//    //进行静止判断的时间
-//    long isStandTime = 0;
+    final int judgeNumStation = 4;
+    double[] isPeakOfWaveStation = new double[judgeNumStation];
 
     // 0-慢走；1-快走；2-慢跑；3-快跑
     private static int calibrationTag = 0;
@@ -114,9 +98,11 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private List listPoints4 = new ArrayList();
 
     public static String[] set = new String[80];
+    public static int station = 0;
+    public static ArrayList<String> listDecisionTree = new ArrayList<String>();
 
-    private static int steps = 0;
-    private double diffV = 0;
+    private static int stepsStation = 0;
+    private double diffVStation = 0;
 
     private TextView txtCalibration;
     private TextView txtCountDownTime;
@@ -130,6 +116,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         setContentView(R.layout.activity_calibration);
 
         initParam();
+
+        DbUtils.createDb(this, Constant.TREE_NAME);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -291,100 +279,100 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     private double[] calculateCSVMAndPoints(double[] doubles) {
 
-        diffV = 0;
-        points1 = 0;
-        points2 = 0;
-        steps = 0;
-        result = new double[]{0.0, 0.0};
-        pointsOfPeak = new int[]{0,0,0};
+        diffVStation = 0;
+        points1Station = 0;
+        points2Station = 0;
+        stepsStation = 0;
+        resultStation = new double[]{0.0, 0.0};
+        pointsOfPeakStation = new int[]{0,0,0};
 
         for (int i = 0; i < doubles.length; i++) {
 
-            DetectorNewStep(doubles[i], i);
+            DetectorNewStepStation(doubles[i], i);
         }
-        if (steps > 0) {
-            result[0] = diffV / steps;
-        }
-
-        if (steps > 1) {
-            result[1] = (points2 - points1) / (steps - 1); //平均两步之间的点数！
+        if (stepsStation > 0) {
+            resultStation[0] = diffVStation / stepsStation;
         }
 
-        return result;
+        if (stepsStation > 1) {
+            resultStation[1] = (points2Station - points1Station) / (stepsStation - 1); //平均两步之间的点数！
+        }
+
+        return resultStation;
     }
 
-    public void DetectorNewStep(double values, int k) {
+    public void DetectorNewStepStation(double values, int k) {
 
-        if (DetectorPeak(values, isPeakOfWave, k)) {
-            steps++;    //检测到1步
-            System.out.println("_STEP11 步数"+(steps)+" k: "+k);
-            if (steps == 1) {
-                points1 = k;
+        if (DetectorPeakStation(values, isPeakOfWaveStation, k)) {
+            stepsStation++;    //检测到1步
+            System.out.println("_STEP11 步数"+(stepsStation)+" k: "+k);
+            if (stepsStation == 1) {
+                points1Station = k;
             } else {
-                points2 = k;
+                points2Station = k;
             }
         }
 
-        for (int i = 0; i < judgeNum - 1; i++) {
-            isPeakOfWave[i] = isPeakOfWave[i + 1];
+        for (int i = 0; i < judgeNumStation - 1; i++) {
+            isPeakOfWaveStation[i] = isPeakOfWaveStation[i + 1];
         }
-        isPeakOfWave[judgeNum - 1] = values;   //判断波峰波谷的矩阵更新
+        isPeakOfWaveStation[judgeNumStation - 1] = values;   //判断波峰波谷的矩阵更新
     }
 
-    public boolean DetectorPeak(double newValue, double[] oldValue, int p1) {
+    public boolean DetectorPeakStation(double newValue, double[] oldValue, int p1) {
         //lastStatus = isDirectionUp;
-        if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
-                && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4]) {
+        if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
+                && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
             //timeOfValley = System.currentTimeMillis();
-            isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
-            valueOfValley = oldValue[2];
+            isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
+            valueOfValleyStation = oldValue[2];
 //            pointsOfValley = p1;
 //            System.out.println("This is test_3");
         }
 
-        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.7 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
-                && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
-            if (pointsOfPeak[0] == 0) {
-                pointsOfPeak[2] = p1;
+        if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 11.7 && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
+                && oldValue[judgeNumStation - 2] >= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] > oldValue[judgeNumStation - 4]) {
+            if (pointsOfPeakStation[0] == 0) {
+                pointsOfPeakStation[2] = p1;
             }
-            int temp = pointsOfPeak[0];
-            pointsOfPeak[0] = pointsOfPeak[1];   //初始值为0，赋给 pointsOfPeak[0]
-            pointsOfPeak[1] = p1;                //此处不为0
+            int temp = pointsOfPeakStation[0];
+            pointsOfPeakStation[0] = pointsOfPeakStation[1];   //初始值为0，赋给 pointsOfPeakStation[0]
+            pointsOfPeakStation[1] = p1;                //此处不为0
 
-            valueOfPeak = oldValue[2];  // 数组中2为峰值
+            valueOfPeakStation = oldValue[2];  // 数组中2为峰值
 //            System.out.println("This is test_4");
 //           //动态阈值
             //判断是否是干扰
-            System.out.println("_STEP11 两点之间的差"+(pointsOfPeak[1] - pointsOfPeak[0]));
-            if (valueOfPeak - valueOfValley > (tValue)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
-                    && pointsOfPeak[1] - pointsOfPeak[0] > 10 && pointsOfPeak[1] - pointsOfPeak[0] < 88) {
+            System.out.println("_STEP11 两点之间的差"+(pointsOfPeakStation[1] - pointsOfPeakStation[0]));
+            if (valueOfPeakStation - valueOfValleyStation > (tValueStation)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
+                    && pointsOfPeakStation[1] - pointsOfPeakStation[0] > 10 && pointsOfPeakStation[1] - pointsOfPeakStation[0] < 88) {
 //                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
-                isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
+                isPeakOrValleyStation = !isPeakOrValleyStation; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态
-                for (int i = 0; i < diffNum - 1; i++) {
-                    diffValue[1][i] = diffValue[1][i + 1];
-                    diffValue[0][i] = diffValue[0][i + 1];
-                    //System.out.println("test_11"+" "+ diffValue[0][i]);
+                for (int i = 0; i < diffNumStation - 1; i++) {
+                    diffValueStation[1][i] = diffValueStation[1][i + 1];
+                    diffValueStation[0][i] = diffValueStation[0][i + 1];
+                    //System.out.println("test_11"+" "+ diffValueStation[0][i]);
                 }
 //                System.out.println("This is test_9");
-                diffValue[1][diffNum - 1] = valueOfPeak - valueOfValley;
+                diffValueStation[1][diffNumStation - 1] = valueOfPeakStation - valueOfValleyStation;
 
-                diffV += valueOfPeak - valueOfValley;
+                diffVStation += valueOfPeakStation - valueOfValleyStation;
 
-                diffValue[0][diffNum - 1] = pointsOfPeak[1] - pointsOfPeak[0];  //判断状态用到的5组的时间和幅度差值
+                diffValueStation[0][diffNumStation - 1] = pointsOfPeakStation[1] - pointsOfPeakStation[0];  //判断状态用到的5组的时间和幅度差值
                 //是否进行状态判断
 
                 return true;  //返回新的一步
 
             } else {
-                isPeakOrValley = !isPeakOrValley;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
+                isPeakOrValleyStation = !isPeakOrValleyStation;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
 //                System.out.println("This is test_5");
-                pointsOfPeak[1] = pointsOfPeak[0];
-                pointsOfPeak[0] = temp;
+                pointsOfPeakStation[1] = pointsOfPeakStation[0];
+                pointsOfPeakStation[0] = temp;
             }
         }
 
-//        System.out.println("This is test_2" + " " + (oldValue[0] - oldValue[1]) + isPeakOrValley);
+//        System.out.println("This is test_2" + " " + (oldValue[0] - oldValue[1]) + isPeakOrValleyStation);
 
         return false;
     }
@@ -474,6 +462,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             }
             setValue(set);
 
+            getDecisionTree();
+
+            storeList();
+
             System.out.println("_STEP111" + set[0]+" "+set[1]+" "+set[20]+" "+set[40]+" "+set[60]+" "+set[1]);
 
             Toast.makeText(CalibrationActivity.this,
@@ -524,5 +516,73 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         Toast.makeText(CalibrationActivity.this,
                 getResources().getString(R.string.calibration_interval3), Toast.LENGTH_SHORT).show();
         calibrationTag++;
+    }
+
+    // 生成决策树的方法
+    private void getDecisionTree() {
+        // eg 1
+        String attr = "Mean Var CSVM Points";
+//        String[] set = CalibrationActivity.set;
+
+
+        List<ArrayList<String>> dataset = new ArrayList<ArrayList<String>>();
+        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
+        for (int i = 0; i < set.length; i++) {
+            String[] s = set[i].split(" ");
+            ArrayList<String> list = new ArrayList<String>();
+            for (int j = 0; j < s.length; j++) {
+                list.add((s[j]));
+            }
+            dataset.add(list); // 原始数据获取
+        }
+
+        DecisionTree dt = new DecisionTree();
+        long a = System.currentTimeMillis();
+
+        System.out.println("attribute:" + attribute);
+        TreeNode tree = dt.createDecisionTree(attribute, dataset);
+        tree.print("");
+        long b = System.currentTimeMillis();
+        System.out.println(b - a);
+        // System.out.println(TreeNode.str1);
+        System.out.println(TreeNode.str);
+        for (int i = 0; i < TreeNode.str.size(); i++) {
+            System.out.println(TreeNode.str.get(i));
+            String str1 = TreeNode.str.get(i).get(0);
+            // System.out.println("--------------------------");
+            System.out.println(str1);
+            String[] str2 = str1.split("\\,");
+            System.out.println(str2[0]);
+            String[] str3 = str2[0].split("\\s+");
+            String[] str4 = str2[1].split("\\s+");
+            String str5 = "";
+            for (int j = 1; j < str3.length; j += 2) {
+                str5 += str3[j] + " ";
+            }
+            System.out.println(str5);
+            listDecisionTree.add(str5 + str4[str4.length - 1]);
+        }
+        System.out.println(listDecisionTree);
+        System.out.println(listDecisionTree.size());
+        double[] input = {12.25, 10.10, 3.2, 15.6};
+        station = Integer.parseInt(recognition(listDecisionTree, input));
+        System.out.println("status:" + station);
+    }
+
+    // 设置存储生成的List
+    private void storeList() {
+        List<TreeData> listTree = DbUtils.getQueryByWhere(TreeData.class, "day", new String[]{"decisionTree"});
+
+        if (listTree.size() == 0 || listTree.isEmpty()) {
+
+            TreeData treeData = new TreeData("decisionTree", listDecisionTree);
+            DbUtils.insert(treeData);
+
+        } else if (listTree.size() == 1) {
+
+            TreeData data = listTree.get(0);
+            data.setTree(listDecisionTree);
+            DbUtils.update(data);
+        }
     }
 }
