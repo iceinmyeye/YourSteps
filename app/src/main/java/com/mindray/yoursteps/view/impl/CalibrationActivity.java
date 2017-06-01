@@ -32,7 +32,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //    float[] orignValues = new float[3];
 
     //检测波峰或者波谷,true为当前只检测波峰，false为当前只检测波谷
-    boolean isPeakOrValley = true;
+    private boolean isPeakOrValley = true;
 
     //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
     final int diffNum = 5;
@@ -51,11 +51,11 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     //CSVM的均值
 
-    static int points1 = 0;
+    int points1 = 0;
 
-    static int points2 = 0;
+    int points2 = 0;
 
-    static int[] pointsOfPeak = new int[2];     //存波峰位置
+    static int[] pointsOfPeak = new int[3];     //存波峰位置
 
     //状态判断，初始为静止状态
 //    public static int  stationvalue = 0;
@@ -115,7 +115,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     public static String[] set = new String[80];
 
-    private int steps = 0;
+    private static int steps = 0;
     private double diffV = 0;
 
     private TextView txtCalibration;
@@ -290,13 +290,16 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
     private double[] calculateCSVMAndPoints(double[] doubles) {
+
         diffV = 0;
         points1 = 0;
         points2 = 0;
         steps = 0;
-
+        result = new double[]{0.0, 0.0};
+        pointsOfPeak = new int[]{0,0,0};
 
         for (int i = 0; i < doubles.length; i++) {
+
             DetectorNewStep(doubles[i], i);
         }
         if (steps > 0) {
@@ -314,6 +317,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         if (DetectorPeak(values, isPeakOfWave, k)) {
             steps++;    //检测到1步
+            System.out.println("_STEP11 步数"+(steps)+" k: "+k);
             if (steps == 1) {
                 points1 = k;
             } else {
@@ -341,20 +345,17 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.7 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
             if (pointsOfPeak[0] == 0) {
-                pointsOfPeak[0] = p1;
-            } else {
-                pointsOfPeak[1] = p1;
+                pointsOfPeak[2] = p1;
             }
-            //isPeakOrValley = !isPeakOrValley;  //检测波峰
+            int temp = pointsOfPeak[0];
+            pointsOfPeak[0] = pointsOfPeak[1];   //初始值为0，赋给 pointsOfPeak[0]
+            pointsOfPeak[1] = p1;                //此处不为0
+
             valueOfPeak = oldValue[2];  // 数组中2为峰值
-            System.out.println("This is test_4");
-//            if(station<3){
-//                tValue = 0.1 * 9.8;
-//            }
-//            else{
-//                tValue = 0.2 * 9.8;
-//            }                                  //动态阈值
+//            System.out.println("This is test_4");
+//           //动态阈值
             //判断是否是干扰
+            System.out.println("_STEP11 两点之间的差"+(pointsOfPeak[1] - pointsOfPeak[0]));
             if (valueOfPeak - valueOfValley > (tValue)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
                     && pointsOfPeak[1] - pointsOfPeak[0] > 10 && pointsOfPeak[1] - pointsOfPeak[0] < 88) {
 //                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
@@ -365,34 +366,25 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                     diffValue[0][i] = diffValue[0][i + 1];
                     //System.out.println("test_11"+" "+ diffValue[0][i]);
                 }
-                System.out.println("This is test_9");
+//                System.out.println("This is test_9");
                 diffValue[1][diffNum - 1] = valueOfPeak - valueOfValley;
 
                 diffV += valueOfPeak - valueOfValley;
 
                 diffValue[0][diffNum - 1] = pointsOfPeak[1] - pointsOfPeak[0];  //判断状态用到的5组的时间和幅度差值
                 //是否进行状态判断
-//                isStation += 1;    //不进行状态判断！！ 可以标注掉
-                //5次进行一次状态检测
-                System.out.println("This is test_8");
-//                if (isStation % 5 == 0 && CURRENT_STEPS >= 5) {
-//                    station(diffValue);
-//
-//                    System.out.println("This is test_10");
-//                }
 
-                pointsOfPeak[0] = pointsOfPeak[1]; //留出pointsOfPeak[1]接收新的值
-                System.out.print("This is test_7");
-//                timeOfPeak = System.currentTimeMillis();
                 return true;  //返回新的一步
 
             } else {
                 isPeakOrValley = !isPeakOrValley;// 判断是否是干扰，如果是干扰，满足else，放弃之前的波谷值。
-                System.out.println("This is test_5");
+//                System.out.println("This is test_5");
+                pointsOfPeak[1] = pointsOfPeak[0];
+                pointsOfPeak[0] = temp;
             }
         }
 
-        System.out.println("This is test_2" + " " + (oldValue[0] - oldValue[1]) + isPeakOrValley);
+//        System.out.println("This is test_2" + " " + (oldValue[0] - oldValue[1]) + isPeakOrValley);
 
         return false;
     }
@@ -482,7 +474,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             }
             setValue(set);
 
-            System.out.println("_STEP" + set);
+            System.out.println("_STEP111" + set[0]+" "+set[1]+" "+set[20]+" "+set[40]+" "+set[60]+" "+set[1]);
 
             Toast.makeText(CalibrationActivity.this,
                     getResources().getString(R.string.calibration_finished), Toast.LENGTH_LONG).show();
