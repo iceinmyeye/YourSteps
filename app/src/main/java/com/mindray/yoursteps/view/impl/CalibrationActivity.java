@@ -11,8 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mindray.yoursteps.R;
+import com.mindray.yoursteps.bean.TreeData;
 import com.mindray.yoursteps.bean.TreeNode;
+import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.utils.CountDownTimer;
+import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.utils.VibrateUtil;
 
 import java.io.BufferedWriter;
@@ -116,7 +119,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
     public static String[] set = new String[80];
     public static int station = 0;
-    public static ArrayList<String> list = new ArrayList<String>();
+    public static ArrayList<String> listDecisionTree = new ArrayList<String>();
 
     private static int steps = 0;
     private double diffV = 0;
@@ -133,6 +136,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         setContentView(R.layout.activity_calibration);
 
         initParam();
+
+        DbUtils.createDb(this, Constant.TREE_NAME);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -477,6 +482,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             }
             setValue(set);
 
+            getDecisionTree();
+
+            storeList();
+
             System.out.println("_STEP111" + set[0]+" "+set[1]+" "+set[20]+" "+set[40]+" "+set[60]+" "+set[1]);
 
             Toast.makeText(CalibrationActivity.this,
@@ -530,7 +539,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     }
 
     // 生成决策树的方法
-    public static void main(String args[]) {
+    private void getDecisionTree() {
         // eg 1
         String attr = "Mean Var CSVM Points";
 //        String[] set = CalibrationActivity.set;
@@ -571,12 +580,12 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 str5 += str3[j] + " ";
             }
             System.out.println(str5);
-            list.add(str5 + str4[str4.length - 1]);
+            listDecisionTree.add(str5 + str4[str4.length - 1]);
         }
-        System.out.println(list);
-        System.out.println(list.size());
+        System.out.println(listDecisionTree);
+        System.out.println(listDecisionTree.size());
         double[] input = {12.25, 10.10, 3.2, 15.6};
-        station = Integer.parseInt(recognition(list, input));
+        station = Integer.parseInt(recognition(listDecisionTree, input));
         System.out.println("status:" + station);
 
         //// for(int i=0;i<TreeNode.str.size();i++){
@@ -589,5 +598,22 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         //// }
         //// System.out.println(splitV[i][splitV[i].length-1]);
         // }
+    }
+
+    // 设置存储生成的List
+    private void storeList() {
+        List<TreeData> listTree = DbUtils.getQueryByWhere(TreeData.class, "day", new String[]{"decisionTree"});
+
+        if (listTree.size() == 0 || listTree.isEmpty()) {
+
+            TreeData treeData = new TreeData("decisionTree", listDecisionTree);
+            DbUtils.insert(treeData);
+
+        } else if (listTree.size() == 1) {
+
+            TreeData data = listTree.get(0);
+            data.setTree(listDecisionTree);
+            DbUtils.update(data);
+        }
     }
 }

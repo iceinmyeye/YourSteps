@@ -329,11 +329,11 @@ public class DecisionTree {
 //        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
 //        for (int i = 0; i < set.length; i++) {
 //            String[] s = set[i].split(" ");
-//            ArrayList<String> list = new ArrayList<String>();
+//            ArrayList<String> listDecisionTree = new ArrayList<String>();
 //            for (int j = 0; j < s.length; j++) {
-//                list.add((s[j]));
+//                listDecisionTree.add((s[j]));
 //            }
-//            dataset.add(list); // 原始数据获取
+//            dataset.add(listDecisionTree); // 原始数据获取
 //        }
 //
 //        DecisionTree dt = new DecisionTree();
@@ -360,12 +360,12 @@ public class DecisionTree {
 //                str5 += str3[j] + " ";
 //            }
 //            System.out.println(str5);
-//            list.add(str5 + str4[str4.length - 1]);
+//            listDecisionTree.add(str5 + str4[str4.length - 1]);
 //        }
-//        System.out.println(list);
-//        System.out.println(list.size());
+//        System.out.println(listDecisionTree);
+//        System.out.println(listDecisionTree.size());
 //        double[] input = {12.25, 10.10, 3.2, 15.6};
-//        station = Integer.parseInt(recognition(list, input));
+//        station = Integer.parseInt(recognition(listDecisionTree, input));
 //        System.out.println("status:" + station);
 //
 //        //// for(int i=0;i<TreeNode.str.size();i++){
