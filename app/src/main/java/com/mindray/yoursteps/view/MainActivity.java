@@ -173,6 +173,16 @@ public class MainActivity extends AppCompatActivity implements Callback {
         List<TreeData> listTree = DbUtils.getQueryByWhere(TreeData.class, "day", new String[]{"decisionTree"});
         if (listTree.size() == 1) {
             treeSeven = listTree.get(0).getTree();
+        } else {
+
+            treeSeven = new ArrayList();
+
+            treeSeven.add("Mean>10.949300000000001 Var>45.52675 4");
+            treeSeven.add("Mean>10.949300000000001 Var<=45.52675 CSVM>2.04595 3");
+            treeSeven.add("Mean>10.949300000000001 Var<=45.52675 CSVM<=2.04595 2");
+            treeSeven.add("Mean<=10.949300000000001 Var>13.891950000000001 2");
+            treeSeven.add("Mean<=10.949300000000001 Var<=13.891950000000001 1");
+
         }
         intent.putExtra("DecisionTree", treeSeven);
 
@@ -200,13 +210,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
                         textViewStatus.setText("步行");
                         break;
                     case 2:
-                        textViewStatus.setText("快走/慢跑");
+                        textViewStatus.setText("快走");
                         break;
                     case 3:
-                        textViewStatus.setText("快跑");
+                        textViewStatus.setText("慢跑");
                         break;
                     case 4:
-                        textViewStatus.setText("判断中...");
+                        textViewStatus.setText("快跑");
                         break;
                     default:
                         textViewStatus.setText("error");
