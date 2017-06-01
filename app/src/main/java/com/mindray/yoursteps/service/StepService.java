@@ -29,6 +29,7 @@ import com.mindray.yoursteps.utils.DbUtils;
 import com.mindray.yoursteps.utils.StepDateUtils;
 import com.mindray.yoursteps.view.MainActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class StepService extends Service implements SensorEventListener {
 
     // 定义存储历史数据需要传递给Review的变量
     private static String[] reviewStepData;
+    public static ArrayList treeEight;
 
     // 定义今日步数的变量
     private static int TODAY_STEPS;
@@ -124,6 +126,11 @@ public class StepService extends Service implements SensorEventListener {
     // onStartCommand()方法，在每次服务启动的时候调用。服务一旦启动，就会立刻执行其中的动作
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        // 获取决策树
+        treeEight = intent.getStringArrayListExtra("DecisionTree");
+        System.out.println("DecisionTree " + treeEight);
+
         initTodayData();
         updateNotification("当前步数：" + StepCount2.CURRENT_STEPS + " 步");
         return START_STICKY;

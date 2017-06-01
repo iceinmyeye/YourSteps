@@ -206,6 +206,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         String str3 = sb3.toString();
         save(str3, "runQuickly");
 
+        DbUtils.closeDb();
+
         super.onDestroy();
 
 
