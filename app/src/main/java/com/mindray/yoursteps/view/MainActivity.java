@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.mindray.yoursteps.R;
 import com.mindray.yoursteps.bean.StepTarget;
+import com.mindray.yoursteps.bean.TreeData;
 import com.mindray.yoursteps.config.Constant;
 import com.mindray.yoursteps.service.StepService;
 import com.mindray.yoursteps.utils.StepDateUtils;
@@ -31,6 +32,7 @@ import com.mindray.yoursteps.view.impl.ReviewActivity;
 import com.mindray.yoursteps.view.impl.SettingsActivity;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Callback {
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private String consumption;
 
     public static String[] reviewSeven;
+    private ArrayList treeSeven;
 
     private TextView textViewStatus;
     private TextView textViewTodaySteps;
@@ -166,6 +169,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
     // 启动服务
     private void setupService() {
         Intent intent = new Intent(this, StepService.class);
+
+        List<TreeData> listTree = DbUtils.getQueryByWhere(TreeData.class, "day", new String[]{"decisionTree"});
+        if (listTree.size() == 1) {
+            treeSeven = listTree.get(0).getTree();
+        }
+        intent.putExtra("DecisionTree", treeSeven);
+
         //使用这个ServiceConnection，客户端可以绑定到一个service，通过把它传给bindService()
         //第一个bindService()的参数是一个明确指定了要绑定的service的Intent．
         //第二个参数是ServiceConnection对象．
@@ -273,7 +283,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 });
                 dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {}
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 });
                 dialog.show();
 

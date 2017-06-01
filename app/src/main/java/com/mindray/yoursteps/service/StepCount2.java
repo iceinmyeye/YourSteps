@@ -9,8 +9,10 @@ import android.util.Log;
 
 import com.mindray.yoursteps.bean.TreeData;
 import com.mindray.yoursteps.utils.DbUtils;
+import com.mindray.yoursteps.view.MainActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,7 +26,6 @@ import static com.mindray.yoursteps.view.impl.DecisionTree.recognition;
 public class StepCount2 implements SensorEventListener, Serializable {
 
     // 得到校准中生成的决策树的List
-    List<TreeData> listTree = DbUtils.getQueryByWhere(TreeData.class, "day", new String[]{"decisionTree"});
     private int si = 0;
     private double[] stationValues = new double[200];
     private double stationMean;
@@ -72,6 +73,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         return StepCount2.decisionTreeStation;
     }
     //---------------------------------------------------------------------
+
 
     //存放原始数据
     float[] orignValues = new float[3];
@@ -211,12 +213,14 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
         stationValues[si] = Math.sqrt(Math.pow(event.values[0], 2)
                 + Math.pow(event.values[1], 2) + Math.pow(event.values[2], 2));
+
         if (si == 199) {
+            System.out.println("Tree3_1 " + StepService.treeEight.size());
             stationMean = calculateMean(stationValues);
             stationVar = calculateVariance(stationValues);
             stationCSVMAndPoints = calculateCSVMAndPoints(stationValues);
             double[] input = {stationMean, stationVar, stationCSVMAndPoints[0], stationCSVMAndPoints[1]};
-            decisionTreeStation = Integer.parseInt(recognition(listTree.get(0).getTree(), input));
+            decisionTreeStation = Integer.parseInt(recognition(StepService.treeEight, input));
             si = -1;
         }
         si++;
