@@ -5,7 +5,7 @@ import com.litesuits.orm.db.annotation.PrimaryKey;
 import com.litesuits.orm.db.annotation.Table;
 import com.litesuits.orm.db.enums.AssignType;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by 董小京 on 2017/6/1.
@@ -23,9 +23,9 @@ public class TreeData {
     @Column("day")
     private String day;
     @Column("tree")
-    private List tree;
+    private ArrayList tree;
 
-    public TreeData(String day, List tree) {
+    public TreeData(String day, ArrayList tree) {
         this.day = day;
         this.tree = tree;
     }
@@ -46,11 +46,11 @@ public class TreeData {
         this.day = day;
     }
 
-    public List getTree() {
+    public ArrayList getTree() {
         return tree;
     }
 
-    public void setTree(List tree) {
+    public void setTree(ArrayList tree) {
         this.tree = tree;
     }
 }
