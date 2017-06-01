@@ -11,18 +11,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mindray.yoursteps.R;
-import com.mindray.yoursteps.service.StepCount2;
+import com.mindray.yoursteps.bean.TreeNode;
 import com.mindray.yoursteps.utils.CountDownTimer;
 import com.mindray.yoursteps.utils.VibrateUtil;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.mindray.yoursteps.view.impl.DecisionTree.recognition;
 
 public class CalibrationActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -114,6 +115,8 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     private List listPoints4 = new ArrayList();
 
     public static String[] set = new String[80];
+    public static int station = 0;
+    public static ArrayList<String> list = new ArrayList<String>();
 
     private static int steps = 0;
     private double diffV = 0;
@@ -524,5 +527,67 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         Toast.makeText(CalibrationActivity.this,
                 getResources().getString(R.string.calibration_interval3), Toast.LENGTH_SHORT).show();
         calibrationTag++;
+    }
+
+    // 生成决策树的方法
+    public static void main(String args[]) {
+        // eg 1
+        String attr = "Mean Var CSVM Points";
+//        String[] set = CalibrationActivity.set;
+
+
+        List<ArrayList<String>> dataset = new ArrayList<ArrayList<String>>();
+        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
+        for (int i = 0; i < set.length; i++) {
+            String[] s = set[i].split(" ");
+            ArrayList<String> list = new ArrayList<String>();
+            for (int j = 0; j < s.length; j++) {
+                list.add((s[j]));
+            }
+            dataset.add(list); // 原始数据获取
+        }
+
+        DecisionTree dt = new DecisionTree();
+        long a = System.currentTimeMillis();
+
+        System.out.println("attribute:" + attribute);
+        TreeNode tree = dt.createDecisionTree(attribute, dataset);
+        tree.print("");
+        long b = System.currentTimeMillis();
+        System.out.println(b - a);
+        // System.out.println(TreeNode.str1);
+        System.out.println(TreeNode.str);
+        for (int i = 0; i < TreeNode.str.size(); i++) {
+            System.out.println(TreeNode.str.get(i));
+            String str1 = TreeNode.str.get(i).get(0);
+            // System.out.println("--------------------------");
+            System.out.println(str1);
+            String[] str2 = str1.split("\\,");
+            System.out.println(str2[0]);
+            String[] str3 = str2[0].split("\\s+");
+            String[] str4 = str2[1].split("\\s+");
+            String str5 = "";
+            for (int j = 1; j < str3.length; j += 2) {
+                str5 += str3[j] + " ";
+            }
+            System.out.println(str5);
+            list.add(str5 + str4[str4.length - 1]);
+        }
+        System.out.println(list);
+        System.out.println(list.size());
+        double[] input = {12.25, 10.10, 3.2, 15.6};
+        station = Integer.parseInt(recognition(list, input));
+        System.out.println("status:" + station);
+
+        //// for(int i=0;i<TreeNode.str.size();i++){
+        //// System.out.println("size:"+ splitV[i].length);
+        //// splitV[i] = TreeNode.str.get(i).get(0).split("\\s+");
+        //// System.out.println("size2:"+ splitV[i].length);
+        //// for(int j=1;j<splitV[i].length-2;j+=2){
+        //// System.out.print(splitV[i][j]+" "); //
+        ////// System.out.print(split[split.length-1]); //运动状态
+        //// }
+        //// System.out.println(splitV[i][splitV[i].length-1]);
+        // }
     }
 }
