@@ -194,7 +194,12 @@ public class StepCount2 implements SensorEventListener, Serializable {
         synchronized (this) {
             if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 calc_step(event);
-                calc_station(event);
+                if (stationvalue == 0) {
+                    decisionTreeStation = 0;
+                } else {
+                    calc_station(event);
+                }
+
             }
         }
     }
@@ -253,7 +258,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         points2Station = 0;
         stepsStation = 0;
         resultStation = new double[]{0.0, 0.0};
-        pointsOfPeakStation = new int[]{0,0,0};
+        pointsOfPeakStation = new int[]{0, 0, 0};
 
         for (int i = 0; i < doubles.length; i++) {
 
@@ -274,7 +279,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
         if (DetectorPeakStation(values, isPeakOfWaveStation, k)) {
             stepsStation++;    //检测到1步
-            System.out.println("_STEP11 步数"+(stepsStation)+" k: "+k);
+            System.out.println("_STEP11 步数" + (stepsStation) + " k: " + k);
             if (stepsStation == 1) {
                 points1Station = k;
             } else {
@@ -312,7 +317,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
 //            System.out.println("This is test_4");
 //           //动态阈值
             //判断是否是干扰
-            System.out.println("_STEP11 两点之间的差"+(pointsOfPeakStation[1] - pointsOfPeakStation[0]));
+            System.out.println("_STEP11 两点之间的差" + (pointsOfPeakStation[1] - pointsOfPeakStation[0]));
             if (valueOfPeakStation - valueOfValleyStation > (tValueStation)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
                     && pointsOfPeakStation[1] - pointsOfPeakStation[0] > 10 && pointsOfPeakStation[1] - pointsOfPeakStation[0] < 88) {
 //                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
