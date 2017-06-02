@@ -177,11 +177,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
             treeSeven = new ArrayList();
 
-            treeSeven.add("Mean>10.949300000000001 Var>45.52675 4");
-            treeSeven.add("Mean>10.949300000000001 Var<=45.52675 CSVM>2.04595 3");
-            treeSeven.add("Mean>10.949300000000001 Var<=45.52675 CSVM<=2.04595 2");
-            treeSeven.add("Mean<=10.949300000000001 Var>13.891950000000001 2");
-            treeSeven.add("Mean<=10.949300000000001 Var<=13.891950000000001 1");
+            treeSeven.add("CSVM>14.949300000000001 Mean>20.52675 4");
+            treeSeven.add("CSVM>14.949300000000001 Mean<=20.52675 3");
+            treeSeven.add("CSVM<=14.949300000000001 Var>4.02 2");
+            treeSeven.add("CSVM<=14.949300000000001 Var<=4.02 1");
+
 
         }
         intent.putExtra("DecisionTree", treeSeven);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
                         textViewStatus.setText("静止");
                         break;
                     case 1:
-                        textViewStatus.setText("步行");
+                        textViewStatus.setText("慢走");
                         break;
                     case 2:
                         textViewStatus.setText("快走");
