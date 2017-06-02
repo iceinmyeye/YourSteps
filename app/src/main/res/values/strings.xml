@@ -22,7 +22,7 @@
     <string name="step_status">运动状态：</string>
     <string name="step_distance">当前距离：</string>
     <string name="step_todayStep">今日步数：</string>
-    <string name="step_consumption">每日卡路里：</string>
+    <string name="step_consumption">今日燃脂：</string>
 
     <!-- 运动等级 -->
     <string name="step_status_still">静止</string>
@@ -33,7 +33,7 @@
     <!-- 设置 -->
     <string name="settings_target">目标</string>
     <string name="settings_magnitude">步幅</string>
-    <string name="settings_calorie">卡路里</string>
+    <string name="settings_calorie">单步耗能</string>
     <string name="save">保存</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
@@ -43,6 +43,7 @@
 
     <!-- 校准 -->
     <string name="calibration_title">校准</string>
+    <string name="calibration_first">检测到软件第一次安装，建议按照提示进行计步校准操作</string>
     <string name="calibration_option">下面将进入计步校准功能，请选择空旷地带，按提示分别进行慢走、快走、慢跑以及快跑</string>
     <string name="calibration_preparation">校准即将开始，请准备</string>
     <string name="calibration_walkSlowly">请慢走</string>

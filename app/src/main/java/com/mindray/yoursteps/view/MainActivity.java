@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
         if (count == 0) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-            dialog.setMessage(this.getResources().getString(R.string.calibration_option));
+            dialog.setMessage(this.getResources().getString(R.string.calibration_first));
             dialog.setCancelable(false);
             dialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                 @Override
