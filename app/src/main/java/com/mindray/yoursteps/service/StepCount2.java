@@ -73,6 +73,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
     private static int pointsOfPeak = 0;
 
+    private static float[] lvbo = new float[5];//均值窗为5
+
     public static int getDecisionTreeStation() {
         return StepCount2.decisionTreeStation;
     }
@@ -216,6 +218,17 @@ public class StepCount2 implements SensorEventListener, Serializable {
     synchronized private void calc_step(SensorEvent event) {
         average = (float) Math.sqrt(Math.pow(event.values[0], 2)
                 + Math.pow(event.values[1], 2) + Math.pow(event.values[2], 2));
+
+        float sum = 0;
+
+        for(int i=0;i<lvbo.length-1;i++){
+            lvbo[i] = lvbo[i+1];
+            sum += lvbo[i];
+        }
+        lvbo[lvbo.length-1] = average;
+
+        average = (sum+average)/(lvbo.length);  //均值滤波；
+
         DetectorNewStep(average);
     }
 
