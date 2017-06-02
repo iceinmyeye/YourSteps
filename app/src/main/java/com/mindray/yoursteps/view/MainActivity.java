@@ -177,10 +177,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
             treeSeven = new ArrayList();
 
-            treeSeven.add("CSVM>16.949300000000001 Mean>20.52675 4");
-            treeSeven.add("CSVM>16.949300000000001 Mean<=20.52675 3");
-            treeSeven.add("CSVM<=16.949300000000001 Var>4.02 2");
-            treeSeven.add("CSVM<=16.949300000000001 Var<=4.02 1");//CSVM原来为14
+            treeSeven.add("CSVM>13.949300000000001 Mean>20.52675 4");
+            treeSeven.add("CSVM>13.949300000000001 Mean<=20.52675 3");
+            treeSeven.add("CSVM<=13.949300000000001 Var>7.02 2");
+            treeSeven.add("CSVM<=13.949300000000001 Var<=7.02 1");//CSVM原来为14 现在改为26.
 
 
         }
