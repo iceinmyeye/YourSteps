@@ -141,7 +141,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
     // float dStand;
 
     //判断连着上升2次，并且下降2次则为峰值所在，数组长度暂时设置为4，后面可调整为3或者5
-    final int judgeNum = 4;
+    final int judgeNum = 5;
     float[] isPeakOfWave = new float[judgeNum];
 
     //检测到5个波峰波谷值就进行状态检测
@@ -216,6 +216,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
      * 将加速度传感器三轴平方和开根值作为特征值 传入  DetectorNewStepStation
      */
     synchronized private void calc_step(SensorEvent event) {
+
         average = (float) Math.sqrt(Math.pow(event.values[0], 2)
                 + Math.pow(event.values[1], 2) + Math.pow(event.values[2], 2));
 
@@ -336,36 +337,35 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
     public boolean DetectorPeakStation(double newValue, double[] oldValue, int p1) {
         //lastStatus = isDirectionUp;
-//        if (decisionTreeStation == 4) {
-//            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
-//                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]
-//                    && oldValue[judgeNumStation - 4] < oldValue[judgeNumStation - 5]) {//跑步时进行比较
-//                //timeOfValley = System.currentTimeMillis();
-//                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
-//                valueOfValleyStation = oldValue[2];
-//
-////            System.out.println("This is test_3");
-//            }
-//
-//
-//        } else {
-//            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
-//                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
-//                //timeOfValley = System.currentTimeMillis();     //不是跑步状态只判断4个值，如果不行还要再改回来！！！！
-//                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
-//                valueOfValleyStation = oldValue[2];
-//
-////            System.out.println("This is test_3");
-//            }
-//        }
-        if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
-                && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
-            //timeOfValley = System.currentTimeMillis();
-            isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
-            valueOfValleyStation = oldValue[2];
+        if (decisionTreeStation >2 ) {
+            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
+                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]
+                    && oldValue[judgeNumStation - 4] < oldValue[judgeNumStation - 5]) {//跑步时进行比较
+                //timeOfValley = System.currentTimeMillis();
+                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
+                valueOfValleyStation = oldValue[2];
 
 //            System.out.println("This is test_3");
+            }
+
+        } else {
+            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
+                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
+                //timeOfValley = System.currentTimeMillis();     //不是跑步状态只判断4个值，如果不行还要再改回来！！！！
+                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
+                valueOfValleyStation = oldValue[2];
+
+//            System.out.println("This is test_3");
+            }
         }
+//        if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
+//                && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
+//            //timeOfValley = System.currentTimeMillis();
+//            isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
+//            valueOfValleyStation = oldValue[2];
+//
+////            System.out.println("This is test_3");
+//        }
 
         if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 12   //峰值原来是11.7好像，现在改为12  和后面的保持一致
                 && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
@@ -476,37 +476,29 @@ public class StepCount2 implements SensorEventListener, Serializable {
      * */
     public boolean DetectorPeak(float newValue, float[] oldValue) {
         //lastStatus = isDirectionUp;
-//        if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
-//                && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4]) {
-//            //timeOfValley = System.currentTimeMillis();
-//            isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
-//            valueOfValley = oldValue[2];
-//            timeOfValley = System.currentTimeMillis();
-//            System.out.println("This is test_3");
-//        }
-
-        if (decisionTreeStation == 4) {                        //当运动状态为快跑时要严格判断条件
-            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
-                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]
-                    && oldValue[judgeNumStation - 4] < oldValue[judgeNumStation - 5]) {//跑步时进行比较
+        if(decisionTreeStation >3 ){
+            if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
+                    && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3]
+                    && oldValue[judgeNum - 3] < oldValue[judgeNum - 4] && oldValue[judgeNum - 4] < oldValue[judgeNum - 5]) {
                 //timeOfValley = System.currentTimeMillis();
-                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
-                valueOfValleyStation = oldValue[2];
-
-//            System.out.println("This is test_3");
+                isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
+                valueOfValley = oldValue[2];
+                timeOfValley = System.currentTimeMillis();
+                System.out.println("This is test_3");
             }
 
-
-        } else {
-            if (isPeakOrValleyStation && newValue > oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] >= oldValue[judgeNumStation - 2]
-                    && oldValue[judgeNumStation - 2] <= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] < oldValue[judgeNumStation - 4]) {
-                //timeOfValley = System.currentTimeMillis();     //不是跑步状态只判断4个值，如果不行还要再改回来！！！！
-                isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
-                valueOfValleyStation = oldValue[2];
-
-//            System.out.println("This is test_3");
+        }else{
+            if (isPeakOrValley && newValue > oldValue[judgeNum - 1] && oldValue[judgeNum - 1] >= oldValue[judgeNum - 2]
+                    && oldValue[judgeNum - 2] <= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] < oldValue[judgeNum - 4]) {
+                //timeOfValley = System.currentTimeMillis();
+                isPeakOrValley = !isPeakOrValley; //检测到波谷，下一步检测波峰！
+                valueOfValley = oldValue[2];
+                timeOfValley = System.currentTimeMillis();
+                System.out.println("This is test_3");
             }
-        }
+
+        }                                                     //在此处进行了修改！！！
+
 
         if (!isPeakOrValley && oldValue[judgeNum - 2] > 12           //两边要保持一致
                 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
@@ -517,11 +509,11 @@ public class StepCount2 implements SensorEventListener, Serializable {
             System.out.println("This is test_4");
             if (decisionTreeStation <= 3) {  //
                 tValue = 0.15 * 9.8;   //原来为0.1，改为0.15 主要目的是在手持不降低正确率的情况下，口袋中的正确率可以提高
-                tThread = 100;        //95改为100 这些都需要再试
+                tThread = 115;        //150改为120 这些都需要再试
                 //慢走快走下改变了
             } else {
                 tValue = 0.5 * 9.8;
-                tThread = 70;//对于跑步 这边会不会太大
+                tThread = 50;//对于跑步 这边会不会太大
             }
             //动态阈值
             //判断是否是干扰
