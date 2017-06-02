@@ -283,6 +283,11 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
+
+        for(int i=2;i<doubles.length-3;i++){
+            doubles[i] = (doubles[i-2]+doubles[i-1]+doubles[i]+doubles[i+1]+doubles[i+2])/5;
+        }                                                                                   //中值滤波
+
         for (int i = 0; i < doubles.length; i++) {
 
             DetectorNewStepStation(doubles[i], i);
@@ -466,11 +471,11 @@ public class StepCount2 implements SensorEventListener, Serializable {
             valueOfPeak = oldValue[2];  // 数组中2为峰值
             System.out.println("This is test_4");
             if (decisionTreeStation <= 3) {  //
-                tValue = 0.1 * 9.8;
-                tThread = 95;   //
+                tValue = 0.15 * 9.8;   //原来为0.1，改为0.15 主要目的是在手持不降低正确率的情况下，口袋中的正确率可以提高
+                tThread = 100;        //95改为100 这些都需要再试
                 //慢走快走下改变了
             } else {
-                tValue = 0.3 * 9.8;
+                tValue = 0.5 * 9.8;
                 tThread = 70;//对于跑步 这边会不会太大
             }
             //动态阈值

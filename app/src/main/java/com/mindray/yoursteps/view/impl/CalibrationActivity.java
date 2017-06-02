@@ -304,6 +304,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
 
+        for(int i=2;i<doubles.length-3;i++){
+            doubles[i] = (doubles[i-2]+doubles[i-1]+doubles[i]+doubles[i+1]+doubles[i+2])/5;
+        }  //中值滤波
+
         for (int i = 0; i < doubles.length; i++) {
 
             DetectorNewStepStation(doubles[i], i);
