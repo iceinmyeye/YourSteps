@@ -109,7 +109,7 @@ public class DataSetUtil {
                 b += 1;
 
         }
-        if (b / len > 0.05) {  //纯度检测
+        if (b / len > 0.1) {  //纯度检测  0.15有点大了
             return false;
         }
         return true;

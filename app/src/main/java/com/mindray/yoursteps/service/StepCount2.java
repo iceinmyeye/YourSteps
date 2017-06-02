@@ -27,7 +27,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
 
     // 得到校准中生成的决策树的List
     private int si = 0;
-    private double[] stationValues = new double[200];
+    private double[] stationValues = new double[100];  //改为100了，再讨论
+
     private double stationMean;
     private double stationVar;
     private double[] stationCSVMAndPoints;
@@ -43,7 +44,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
     //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
     final int diffNumStation = 5;
 
-    static double tValueStation = 0.2 * 9.8;
+    static double tValueStation = 0.3 * 9.8;
 
     double[][] diffValueStation = new double[2][diffNumStation];
 
@@ -68,6 +69,9 @@ public class StepCount2 implements SensorEventListener, Serializable {
     double[] isPeakOfWaveStation = new double[judgeNumStation];
     private double diffVStation = 0;
     private static int stepsStation = 0;
+    private static int pointsOfValley = 0;
+
+    private static int pointsOfPeak = 0;
 
     public static int getDecisionTreeStation() {
         return StepCount2.decisionTreeStation;
@@ -85,6 +89,8 @@ public class StepCount2 implements SensorEventListener, Serializable {
     final int diffNum = 5;
 
     static double tValue = 0;
+
+    static double tThread = 0;
 
     float[][] diffValue = new float[2][diffNum];
 
@@ -219,7 +225,7 @@ public class StepCount2 implements SensorEventListener, Serializable {
         stationValues[si] = Math.sqrt(Math.pow(event.values[0], 2)
                 + Math.pow(event.values[1], 2) + Math.pow(event.values[2], 2));
 
-        if (si == 199) {
+        if (si == 99) {
             System.out.println("Tree3_1 " + StepService.treeEight.size());
             stationMean = calculateMean(stationValues);
             stationVar = calculateVariance(stationValues);
@@ -259,18 +265,35 @@ public class StepCount2 implements SensorEventListener, Serializable {
         stepsStation = 0;
         resultStation = new double[]{0.0, 0.0};
         pointsOfPeakStation = new int[]{0, 0, 0};
+//        pointsOfValley = 0;
+//        pointsOfPeak = 0;
 
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
         for (int i = 0; i < doubles.length; i++) {
 
             DetectorNewStepStation(doubles[i], i);
+            if (doubles[i] < min) {
+                min = doubles[i];
+            }
+            if (doubles[i] > max) {
+                max = doubles[i];
+            }
         }
         if (stepsStation > 0) {
-            resultStation[0] = diffVStation / stepsStation;
+//            resultStation[0] = diffVStation / stepsStation;
+            resultStation[0] = max - min;
         }
-
         if (stepsStation > 1) {
-            resultStation[1] = (points2Station - points1Station) / (stepsStation - 1); //平均两步之间的点数！
+            resultStation[1] = (points2Station - points1Station) / (stepsStation - 1);
+
+            if (resultStation[1] < 1) {           //平均两步之间的点数！
+                resultStation[1] = 100;
+            }
         }
+//        }else{
+//            resultStation[1] = 100;
+//        }
 
         return resultStation;
     }
@@ -300,11 +323,12 @@ public class StepCount2 implements SensorEventListener, Serializable {
             //timeOfValley = System.currentTimeMillis();
             isPeakOrValleyStation = !isPeakOrValleyStation; //检测到波谷，下一步检测波峰！
             valueOfValleyStation = oldValue[2];
-//            pointsOfValley = p1;
+
 //            System.out.println("This is test_3");
         }
 
-        if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 11.7 && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
+        if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 12   //峰值原来是11.7好像，现在改为12  和后面的保持一致
+                && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
                 && oldValue[judgeNumStation - 2] >= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] > oldValue[judgeNumStation - 4]) {
             if (pointsOfPeakStation[0] == 0) {
                 pointsOfPeakStation[2] = p1;
@@ -421,20 +445,25 @@ public class StepCount2 implements SensorEventListener, Serializable {
             System.out.println("This is test_3");
         }
 
-        if (!isPeakOrValley && oldValue[judgeNum - 2] > 11.7 && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
+        if (!isPeakOrValley && oldValue[judgeNum - 2] > 12           //两边要保持一致
+                && newValue < oldValue[judgeNum - 1] && oldValue[judgeNum - 1] <= oldValue[judgeNum - 2]
                 && oldValue[judgeNum - 2] >= oldValue[judgeNum - 3] && oldValue[judgeNum - 3] > oldValue[judgeNum - 4]) {
             timeOfPeak = System.currentTimeMillis();
             //isPeakOrValley = !isPeakOrValley;  //检测波峰
             valueOfPeak = oldValue[2];  // 数组中2为峰值
             System.out.println("This is test_4");
-            if (stationvalue < 3) {
-                tValue = 0.2 * 9.8;
+            if (decisionTreeStation <= 3) {  //
+                tValue = 0.1 * 9.8;
+                tThread = 95;   //
+                //慢走快走下改变了
             } else {
                 tValue = 0.3 * 9.8;
-            }                                  //动态阈值
+                tThread = 70;//对于跑步 这边会不会太大
+            }
+            //动态阈值
             //判断是否是干扰
             if (valueOfPeak - valueOfValley > (tValue)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
-                    && timeOfPeak - timeOfValley > 75 && timeOfPeak - timeOfValley < 2000) {
+                    && timeOfPeak - timeOfValley > (tThread) && timeOfPeak - timeOfValley < 2000) {
                 System.out.println("_STEP " + (timeOfPeak - timeOfValley));
                 isPeakOrValley = !isPeakOrValley; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态

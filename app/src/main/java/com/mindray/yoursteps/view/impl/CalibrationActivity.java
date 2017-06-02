@@ -41,7 +41,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
     //检测5组波峰与波谷的差，保存波谷检测时间与波峰检测时间的差，以及波峰值减波谷值的差
     final int diffNumStation = 5;
 
-    static double tValueStation = 0.2 * 9.8;
+    static double tValueStation = 0.3 * 9.8;
 
     double[][] diffValueStation = new double[2][diffNumStation];
 
@@ -206,8 +206,19 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         String str3 = sb3.toString();
         save(str3, "runQuickly");
 
-        String str4 = listDecisionTree.toString();
-        save(str4, "decisionTree");
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 80; i++) {
+            sb.append(set[i] + "               ");
+            System.out.println("_iii" + set[i]);
+        }
+
+        String str4 = sb.toString();
+        save(str4, "set");
+
+        String str5 = listDecisionTree.toString();
+
+        save(str5, "decesionTree");
 
         DbUtils.closeDb();
 
@@ -289,18 +300,35 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
         points2Station = 0;
         stepsStation = 0;
         resultStation = new double[]{0.0, 0.0};
-        pointsOfPeakStation = new int[]{0,0,0};
+        pointsOfPeakStation = new int[]{0, 0, 0};
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
 
         for (int i = 0; i < doubles.length; i++) {
 
             DetectorNewStepStation(doubles[i], i);
+            if (doubles[i] < min) {
+                min = doubles[i];
+            }
+            if (doubles[i] > max) {
+                max = doubles[i];
+            }
         }
         if (stepsStation > 0) {
-            resultStation[0] = diffVStation / stepsStation;
+
+//            resultStation[0] = diffVStation / stepsStation;
+            resultStation[0] = max - min;
+            System.out.print("_Step11" + " " + (max - min));
         }
 
         if (stepsStation > 1) {
+
             resultStation[1] = (points2Station - points1Station) / (stepsStation - 1); //平均两步之间的点数！
+            if (resultStation[1] < 1.0) {
+                resultStation[1] = 100;
+            }
+        } else {
+            resultStation[1] = 100;
         }
 
         return resultStation;
@@ -310,7 +338,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
         if (DetectorPeakStation(values, isPeakOfWaveStation, k)) {
             stepsStation++;    //检测到1步
-            System.out.println("_STEP11 步数"+(stepsStation)+" k: "+k);
+            System.out.println("_STEP11 步数" + (stepsStation) + " k: " + k);  //只有1步的话就只输出0；
             if (stepsStation == 1) {
                 points1Station = k;
             } else {
@@ -335,7 +363,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //            System.out.println("This is test_3");
         }
 
-        if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 11.7 && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
+        if (!isPeakOrValleyStation && oldValue[judgeNumStation - 2] > 12 && newValue < oldValue[judgeNumStation - 1] && oldValue[judgeNumStation - 1] <= oldValue[judgeNumStation - 2]
                 && oldValue[judgeNumStation - 2] >= oldValue[judgeNumStation - 3] && oldValue[judgeNumStation - 3] > oldValue[judgeNumStation - 4]) {
             if (pointsOfPeakStation[0] == 0) {
                 pointsOfPeakStation[2] = p1;
@@ -348,10 +376,10 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //            System.out.println("This is test_4");
 //           //动态阈值
             //判断是否是干扰
-            System.out.println("_STEP11 两点之间的差"+(pointsOfPeakStation[1] - pointsOfPeakStation[0]));
+            System.out.println("_STEP11 两点之间的差" + (pointsOfPeakStation[1] - pointsOfPeakStation[0]));
             if (valueOfPeakStation - valueOfValleyStation > (tValueStation)     //这里可以进行更改判断的阈值0.15手持可以，但是对于放在兜里有点大？
                     && pointsOfPeakStation[1] - pointsOfPeakStation[0] > 10 && pointsOfPeakStation[1] - pointsOfPeakStation[0] < 88) {
-//                System.out.println("_STEP "+(timeOfPeak - timeOfValley));
+                System.out.println("_STEP " + (pointsOfPeakStation[1] - pointsOfPeakStation[0]) + p1);
                 isPeakOrValleyStation = !isPeakOrValleyStation; //有效的一步，下一个状态检测波谷
                 //确认为一个有效的步态
                 for (int i = 0; i < diffNumStation - 1; i++) {
@@ -374,6 +402,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 //                System.out.println("This is test_5");
                 pointsOfPeakStation[1] = pointsOfPeakStation[0];
                 pointsOfPeakStation[0] = temp;
+                System.out.println("_STEP 干扰");
             }
         }
 
@@ -454,6 +483,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 listVar3.add(calculateVariance(temp3));
                 listVar4.add(calculateVariance(temp4));
 
+
                 listSCVM1.add(calculateCSVMAndPoints(temp1)[0]);
                 listSCVM2.add(calculateCSVMAndPoints(temp2)[0]);
                 listSCVM3.add(calculateCSVMAndPoints(temp3)[0]);
@@ -464,6 +494,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
                 listPoints3.add(calculateCSVMAndPoints(temp3)[1]);
                 listPoints4.add(calculateCSVMAndPoints(temp4)[1]);
 
+
             }
             setValue(set);
 
@@ -471,7 +502,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
             storeList();
 
-            System.out.println("_STEP111" + set[0]+" "+set[1]+" "+set[20]+" "+set[40]+" "+set[60]+" "+set[1]);
+            System.out.println("_STEP111" + set[0] + " " + set[1] + " " + set[20] + " " + set[40] + " " + set[60] + " " + set[1]);
 
             Toast.makeText(CalibrationActivity.this,
                     getResources().getString(R.string.calibration_finished), Toast.LENGTH_LONG).show();
@@ -531,9 +562,9 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
 
 
         List<ArrayList<String>> dataset = new ArrayList<ArrayList<String>>();
-        List<String> attribute = Arrays.asList(attr.split(" ")); // 数组转化为list
+        List<String> attribute = Arrays.asList(attr.split("\\s+")); // 数组转化为list
         for (int i = 0; i < set.length; i++) {
-            String[] s = set[i].split(" ");
+            String[] s = set[i].split("\\s+");
             ArrayList<String> list = new ArrayList<String>();
             for (int j = 0; j < s.length; j++) {
                 list.add((s[j]));
@@ -567,8 +598,7 @@ public class CalibrationActivity extends AppCompatActivity implements SensorEven
             System.out.println(str5);
             listDecisionTree.add(str5 + str4[str4.length - 1]);
         }
-        System.out.println(listDecisionTree);
-        System.out.println(listDecisionTree.size());
+        System.out.println("listDecisionTree.size():" + listDecisionTree.size());
         double[] input = {12.25, 10.10, 3.2, 15.6};
         station = Integer.parseInt(recognition(listDecisionTree, input));
         System.out.println("status:" + station);
