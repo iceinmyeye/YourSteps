@@ -48,6 +48,12 @@ public class ReviewActivity extends AppCompatActivity {
 
     private void initReview() {
 
+//        // 写入过去15天的历史数据-目标步数
+//        for (int i = 0; i < 15; i++) {
+//            StepTarget stepTarget = new StepTarget(StepDateUtils.getSomeDate(i + 1), "5000");
+//            DbUtils.insert(stepTarget);
+//        }
+
         for (int i = 1; i < 30; i++) {
 
             List<StepTarget> listTarget = DbUtils.getQueryByWhere(StepTarget.class, "date", new String[]{StepDateUtils.getSomeDate(i)});

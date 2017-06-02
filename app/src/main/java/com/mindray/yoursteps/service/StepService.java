@@ -141,6 +141,12 @@ public class StepService extends Service implements SensorEventListener {
      */
     private void initTodayData() {
 
+//        // 写入过去15天的历史数据-用户步数
+//        for (int i = 0; i < 15; i++) {
+//            StepData stepData = new StepData(StepDateUtils.getSomeDate(i + 1), String.valueOf(500 * (i + 1)));
+//            DbUtils.insert(stepData);
+//        }
+
         getLastSevenData();
 
         CURRENTDATE = StepDateUtils.getTodayDate();
@@ -167,7 +173,7 @@ public class StepService extends Service implements SensorEventListener {
         reviewStepData = new String[30];
 
         for (int i = 0; i < 30; i++) {
-            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{StepDateUtils.getSomeDate(i+1)});
+            List<StepData> listStep = DbUtils.getQueryByWhere(StepData.class, "today", new String[]{StepDateUtils.getSomeDate(i + 1)});
             if (listStep.size() == 1) {
                 reviewStepData[i] = listStep.get(0).getStep();
             } else {
